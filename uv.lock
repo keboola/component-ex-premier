@@ -122,34 +122,34 @@ wheels = [
 name = "ex-premier"
 source = { virtual = "." }
 dependencies = [
-    { name = "freezegun" },
     { name = "keboola-component" },
     { name = "keboola-http-client" },
     { name = "keboola-utils" },
-    { name = "mock" },
     { name = "pydantic" },
 ]
 
 [package.dev-dependencies]
 dev = [
+    { name = "freezegun" },
     { name = "keboola-datadirtest" },
+    { name = "mock" },
     { name = "pytest" },
     { name = "ruff" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "freezegun", specifier = ">=1.5.1" },
-    { name = "keboola-component", specifier = ">=1.9.0" },
+    { name = "keboola-component", specifier = ">=1.10.0" },
     { name = "keboola-http-client", specifier = ">=1.0.1" },
     { name = "keboola-utils", specifier = ">=1.1.0" },
-    { name = "mock", specifier = ">=5.2.0" },
     { name = "pydantic", specifier = ">=2.11.7" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "keboola-datadirtest", specifier = ">=2.0.0" },
+    { name = "freezegun", specifier = ">=1.5.1" },
+    { name = "keboola-datadirtest", specifier = ">=2.2.0" },
+    { name = "mock", specifier = ">=5.2.0" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "ruff", specifier = ">=0.15.2" },
 ]

@@ -1,0 +1,40 @@
+{
+  "files": {},
+  "hash_algorithm": "sha256",
+  "tables": {
+    "invoices_received.csv": {
+      "columns": [
+        "12146.4",
+        "1995",
+        "HG sport K",
+        "1995-01-23T00:00:00",
+        "1995-01-09T00:00:00",
+        "1995-01-09T00:00:00",
+        "",
+        "PF",
+        "P\u0159evodn\u00ed p\u0159\u00edkaz",
+        "13549682",
+        "A2F32380-1841-4E04-820A-24E3D9B6C387",
+        "",
+        "1",
+        "0308",
+        "HGH spirit",
+        "",
+        "[{\"FAKTURA\": 1, \"TEXT\": \"v\u00fdvoj v\u00fdrrobkku,zhotoven\u00ed vzor\", \"MNOZSTVI\": 0.0, \"MJ\": \"\", \"CENA_MJ\": 0.0, \"CENA_SLV\": 0.0, \"SLEVA_PR\": 0.0, \"CENA\": 12146.4, \"CENA_DPH\": 0.0, \"SAZBA_DPH\": 0.0, \"KOD_DPH\": \"\", \"MATERIAL\": 0, \"ZDROJ\": 0, \"OPERACE\": \"\", \"POL_KOD\": \"\", \"SLEVA\": 0.0, \"ID\": \"2F7F9B57-A3B4-4129-B8E1-880B69C715F4\", \"PORDER\": 0}]",
+        "55000",
+        "0.0",
+        "0"
+      ],
+      "hash": "sha256:ce958ea05b9dc1ab9ad3af5fd7a654438e84658d1cda5441e868350859be347d",
+      "row_count": 987,
+      "size_bytes": 611105
+    },
+    "invoices_received.csv.manifest": {
+      "columns": null,
+      "hash": "sha256:ccd4e3d6b3376b4aa9f942dd7856baa2b8a4abe2ec038e40862b88c7c1249f4c",
+      "row_count": null,
+      "size_bytes": 3104
+    }
+  },
+  "version": "1.0"
+}

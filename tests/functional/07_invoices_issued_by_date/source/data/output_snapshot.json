@@ -1,0 +1,41 @@
+{
+  "files": {},
+  "hash_algorithm": "sha256",
+  "tables": {
+    "invoices_issued.csv": {
+      "columns": [
+        "-1140.0",
+        "201908832",
+        "0",
+        "2020-01-20T00:00:00",
+        "2020-01-20T00:00:00",
+        "2020-01-20T00:00:00",
+        "",
+        "VF",
+        "Platebn\u00ed kartou",
+        "",
+        "961ED1F4-B819-4C48-9FA3-83FB21BA70D8",
+        "993D732A-0029-4BBA-911A-68F369D1095D",
+        "1465",
+        "0308",
+        "Miloslava Chloupkov\u00e1",
+        "",
+        "[{\"FAKTURA\": 1465, \"TEXT\": \"Emu Australia \u010dern\u00e9 kotn\u00edkov\u00e9 zateplen\u00e9 hol\u00ednky Ellin Rainboot Black - 38\", \"MNOZSTVI\": 1.0, \"MJ\": \"\", \"CENA_MJ\": -1140.0, \"CENA_SLV\": 0.0, \"SLEVA_PR\": 0.0, \"CENA\": -942.15, \"CENA_DPH\": -197.85, \"SAZBA_DPH\": 21.0, \"KOD_DPH\": \"36\", \"MATERIAL\": \"\", \"ZDROJ\": 0, \"OPERACE\": \"\", \"POL_KOD\": \"\", \"SLEVA\": 0.0, \"ID\": \"B53F7B00-8550-4881-925A-DFF4D90ED0C0\", \"PORDER\": 0}, {\"FAKTURA\": 1465, \"TEXT\": \"Happy Socks barevn\u00e9 pono\u017eky Multi-2013 - 36-40\", \"MNOZSTVI\": 1.0, \"MJ\": \"\", \"CENA_MJ\": 0.0, \"CENA_SLV\": 0.0, \"SLEVA_PR\": 0.0, \"CENA\": 0.0, \"CENA_DPH\": 0.0, \"SAZBA_DPH\": 21.0, \"KOD_DPH\": \"36\", \"MATERIAL\": \"\", \"ZDROJ\": 0, \"OPERACE\": \"\", \"POL_KOD\": \"\", \"SLEVA\": 0.0, \"ID\": \"BE70C573-AC96-4C30-BE71-167394B15E23\", \"PORDER\": 0}]",
+        "0",
+        "0",
+        "0.0",
+        "0"
+      ],
+      "hash": "sha256:fd71ac0771a3865791372c1266e12dc0df63a0d4a8a9e6d28c195ae639c2d232",
+      "row_count": 11,
+      "size_bytes": 11937
+    },
+    "invoices_issued.csv.manifest": {
+      "columns": null,
+      "hash": "sha256:30d9d2602f19f36fcc1d5980fea7d2c90ea9a66685183fe611062fafff952fdd",
+      "row_count": null,
+      "size_bytes": 3250
+    }
+  },
+  "version": "1.0"
+}

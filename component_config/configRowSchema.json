@@ -1,1 +1,92 @@
-{}
+{
+  "type": "object",
+  "title": "Row configuration",
+  "properties": {
+    "source": {
+      "type": "object",
+      "title": "Source",
+      "required": true,
+      "propertyOrder": 1,
+      "properties": {
+        "object": {
+          "type": "string",
+          "title": "Object to extract",
+          "required": true,
+          "enum": [
+            "customers",
+            "suppliers",
+            "invoices_issued",
+            "invoices_received",
+            "products"
+          ],
+          "enum_titles": [
+            "Customers (odběratelé)",
+            "Suppliers (dodavatelé)",
+            "Issued invoices (faktury vydané)",
+            "Received invoices (faktury přijaté)",
+            "Products / stock items (sortiment)"
+          ],
+          "propertyOrder": 1
+        },
+        "date_from": {
+          "type": "string",
+          "title": "Date from",
+          "description": "Optional lower bound for a backfill (yyyy-MM-dd). Maps to PREMIER dat_od parameter.",
+          "format": "date",
+          "propertyOrder": 2,
+          "options": {
+            "dependencies": {
+              "object": ["invoices_issued", "invoices_received"]
+            }
+          }
+        },
+        "date_to": {
+          "type": "string",
+          "title": "Date to",
+          "description": "Optional upper bound for a backfill (yyyy-MM-dd). Maps to PREMIER dat_do parameter.",
+          "format": "date",
+          "propertyOrder": 3,
+          "options": {
+            "dependencies": {
+              "object": ["invoices_issued", "invoices_received"]
+            }
+          }
+        },
+        "warehouse": {
+          "type": "integer",
+          "title": "Warehouse number",
+          "description": "REQUIRED when 'Object to extract' is Products. Warehouse (sklad) number to read stock cards from; leave blank for other objects.",
+          "minimum": 1,
+          "propertyOrder": 4,
+          "options": {
+            "dependencies": {
+              "object": "products"
+            }
+          }
+        }
+      }
+    },
+    "destination": {
+      "type": "object",
+      "title": "Destination",
+      "propertyOrder": 2,
+      "properties": {
+        "load_type": {
+          "type": "string",
+          "title": "Load type",
+          "description": "Incremental load uses the API change timestamp stored in component state to fetch only new or modified records. Full load replaces the output table on every run.",
+          "enum": [
+            "incremental_load",
+            "full_load"
+          ],
+          "enum_titles": [
+            "Incremental load",
+            "Full load"
+          ],
+          "default": "incremental_load",
+          "propertyOrder": 1
+        }
+      }
+    }
+  }
+}
