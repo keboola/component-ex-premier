@@ -1,1 +1,1 @@
-/blob/master/LICENSE.md
+https://github.com/keboola/component-ex-premier/blob/main/LICENSE.md
