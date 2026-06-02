@@ -4,13 +4,14 @@
   "delimiter": ",",
   "enclosure": "\"",
   "manifest_type": "out",
-  "has_header": false,
+  "has_header": true,
   "schema": [
     {
       "name": "BAL_PAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,3"
         }
       },
       "nullable": true
@@ -19,7 +20,7 @@
       "name": "BARVA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -28,7 +29,7 @@
       "name": "BEZ_SPOTD",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -37,7 +38,7 @@
       "name": "CENA_SADY",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -46,7 +47,8 @@
       "name": "CISLO",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -55,7 +57,8 @@
       "name": "C_KOD",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "14"
         }
       },
       "nullable": true
@@ -64,7 +67,7 @@
       "name": "DIM_1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -73,7 +76,7 @@
       "name": "DIM_2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -82,7 +85,7 @@
       "name": "DIM_3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -91,7 +94,8 @@
       "name": "DIM_MJ",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "4"
         }
       },
       "nullable": true
@@ -100,7 +104,7 @@
       "name": "DIM_ZAKL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -109,7 +113,8 @@
       "name": "EAN_BAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "14"
         }
       },
       "nullable": true
@@ -118,7 +123,8 @@
       "name": "FREE_DOK",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "80"
         }
       },
       "nullable": true
@@ -127,7 +133,8 @@
       "name": "HUSTOTA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -136,7 +143,8 @@
       "name": "IDEAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,3"
         }
       },
       "nullable": true
@@ -145,7 +153,8 @@
       "name": "IDEN1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "3"
         }
       },
       "nullable": true
@@ -154,7 +163,8 @@
       "name": "IDEN2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "3"
         }
       },
       "nullable": true
@@ -163,7 +173,8 @@
       "name": "IDEN3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "3"
         }
       },
       "nullable": true
@@ -172,7 +183,8 @@
       "name": "IDEN4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "3"
         }
       },
       "nullable": true
@@ -181,7 +193,8 @@
       "name": "IDEN5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "3"
         }
       },
       "nullable": true
@@ -190,17 +203,17 @@
       "name": "INTER",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
-      "nullable": true,
       "primary_key": true
     },
     {
       "name": "IN_ZTRATA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,3"
         }
       },
       "nullable": true
@@ -209,7 +222,7 @@
       "name": "ISNOT_DN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -218,7 +231,7 @@
       "name": "ISNOT_SLV",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -227,7 +240,7 @@
       "name": "IS_AOBAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -236,7 +249,7 @@
       "name": "IS_NADRAZ",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -245,7 +258,7 @@
       "name": "IS_OBAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -254,7 +267,7 @@
       "name": "IS_OS1AUT",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -263,7 +276,7 @@
       "name": "IS_SLUZBA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -272,7 +285,7 @@
       "name": "IS_VYROBEK",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -281,7 +294,7 @@
       "name": "JAKA_EXPIR",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -290,7 +303,8 @@
       "name": "JINY_CASHB",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -299,7 +313,7 @@
       "name": "KASA_UPCN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -308,7 +322,8 @@
       "name": "KOD_DPH",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "2"
         }
       },
       "nullable": true
@@ -317,7 +332,8 @@
       "name": "KOD_KN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "10"
         }
       },
       "nullable": true
@@ -326,7 +342,7 @@
       "name": "K_PLATNOST",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -335,7 +351,8 @@
       "name": "LSET",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "12"
         }
       },
       "nullable": true
@@ -344,7 +361,8 @@
       "name": "MAX",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,3"
         }
       },
       "nullable": true
@@ -353,7 +371,8 @@
       "name": "MAX_SLEVA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -362,7 +381,8 @@
       "name": "MIN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,3"
         }
       },
       "nullable": true
@@ -371,7 +391,8 @@
       "name": "MJ",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "6"
         }
       },
       "nullable": true
@@ -380,7 +401,8 @@
       "name": "MJ_2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "6"
         }
       },
       "nullable": true
@@ -389,7 +411,8 @@
       "name": "MJ_3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "6"
         }
       },
       "nullable": true
@@ -398,7 +421,8 @@
       "name": "MJ_4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "6"
         }
       },
       "nullable": true
@@ -407,7 +431,7 @@
       "name": "MNOZ_DECI",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -416,7 +440,8 @@
       "name": "MN_BAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -425,7 +450,8 @@
       "name": "MN_KG",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,11"
         }
       },
       "nullable": true
@@ -434,7 +460,8 @@
       "name": "MN_MJ_2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -443,7 +470,8 @@
       "name": "MN_MJ_3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -452,7 +480,8 @@
       "name": "MN_MJ_4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -461,7 +490,8 @@
       "name": "MN_OBAL1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -470,7 +500,8 @@
       "name": "MN_OBAL2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -479,7 +510,8 @@
       "name": "MN_OBAL3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -488,7 +520,8 @@
       "name": "NADRAZ",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -497,7 +530,8 @@
       "name": "NAKL_CENA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -506,7 +540,8 @@
       "name": "NAKL_CM1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -515,7 +550,8 @@
       "name": "NAKL_CM2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -524,7 +560,8 @@
       "name": "NAKL_CM3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -533,7 +570,8 @@
       "name": "OBAL1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "15"
         }
       },
       "nullable": true
@@ -542,7 +580,8 @@
       "name": "OBAL2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "15"
         }
       },
       "nullable": true
@@ -551,7 +590,8 @@
       "name": "OBAL3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "15"
         }
       },
       "nullable": true
@@ -560,7 +600,8 @@
       "name": "OBAL4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "15"
         }
       },
       "nullable": true
@@ -569,7 +610,8 @@
       "name": "OBAL5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "15"
         }
       },
       "nullable": true
@@ -578,7 +620,8 @@
       "name": "OBAL6",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "15"
         }
       },
       "nullable": true
@@ -587,7 +630,8 @@
       "name": "OBAL_BAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -596,7 +640,8 @@
       "name": "OBAL_BAL2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -605,7 +650,8 @@
       "name": "OBAL_MJ",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -614,7 +660,8 @@
       "name": "OBAL_MJ2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -623,7 +670,8 @@
       "name": "OBAL_MJ3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -632,7 +680,8 @@
       "name": "OBAL_PAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -641,7 +690,8 @@
       "name": "OBAL_PAL2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -650,7 +700,8 @@
       "name": "PEVNA_CENA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -659,7 +710,8 @@
       "name": "POPIS1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -668,7 +720,8 @@
       "name": "POPIS2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -677,7 +730,8 @@
       "name": "POPIS2B",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -686,7 +740,8 @@
       "name": "POPIS2C",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -695,7 +750,8 @@
       "name": "POPIS2D",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -704,7 +760,8 @@
       "name": "PRIJEM",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,3"
         }
       },
       "nullable": true
@@ -713,7 +770,8 @@
       "name": "PS_TIME",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "16"
         }
       },
       "nullable": true
@@ -722,7 +780,8 @@
       "name": "PUVOD_KRAJ",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "2"
         }
       },
       "nullable": true
@@ -731,7 +790,8 @@
       "name": "PUVOD_STAT",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "2"
         }
       },
       "nullable": true
@@ -740,7 +800,7 @@
       "name": "RABINV",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -749,7 +809,8 @@
       "name": "RAB_0Z2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -758,7 +819,8 @@
       "name": "RAB_0Z3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -767,7 +829,8 @@
       "name": "RAB_0Z4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -776,7 +839,8 @@
       "name": "RAB_0Z5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -785,7 +849,8 @@
       "name": "RAB_1Z2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -794,7 +859,8 @@
       "name": "RAB_1Z3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -803,7 +869,8 @@
       "name": "RAB_1Z4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -812,7 +879,8 @@
       "name": "RAB_1Z5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -821,7 +889,8 @@
       "name": "RAB_2Z2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -830,7 +899,8 @@
       "name": "RAB_2Z3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -839,7 +909,8 @@
       "name": "RAB_2Z4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -848,7 +919,8 @@
       "name": "RAB_2Z5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -857,7 +929,8 @@
       "name": "RAB_3Z2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -866,7 +939,8 @@
       "name": "RAB_3Z3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -875,7 +949,8 @@
       "name": "RAB_3Z4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -884,7 +959,8 @@
       "name": "RAB_3Z5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -893,7 +969,8 @@
       "name": "RAB_4Z2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -902,7 +979,8 @@
       "name": "RAB_4Z3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -911,7 +989,8 @@
       "name": "RAB_4Z4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -920,7 +999,8 @@
       "name": "RAB_4Z5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -929,7 +1009,8 @@
       "name": "RAB_5Z2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -938,7 +1019,8 @@
       "name": "RAB_5Z3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -947,7 +1029,8 @@
       "name": "RAB_5Z4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -956,7 +1039,8 @@
       "name": "RAB_5Z5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -965,7 +1049,8 @@
       "name": "RAB_CN0",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -974,7 +1059,8 @@
       "name": "RAB_CN0D",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -983,7 +1069,8 @@
       "name": "RAB_CN0Z",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -992,7 +1079,8 @@
       "name": "RAB_CN1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1001,7 +1089,8 @@
       "name": "RAB_CN1D",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1010,7 +1099,8 @@
       "name": "RAB_CN1Z",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1019,7 +1109,8 @@
       "name": "RAB_CN2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1028,7 +1119,8 @@
       "name": "RAB_CN2D",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1037,7 +1129,8 @@
       "name": "RAB_CN2Z",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1046,7 +1139,8 @@
       "name": "RAB_CN3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1055,7 +1149,8 @@
       "name": "RAB_CN3D",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1064,7 +1159,8 @@
       "name": "RAB_CN3Z",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1073,7 +1169,8 @@
       "name": "RAB_CN4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1082,7 +1179,8 @@
       "name": "RAB_CN4D",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1091,7 +1189,8 @@
       "name": "RAB_CN4Z",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1100,7 +1199,8 @@
       "name": "RAB_CN5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1109,7 +1209,8 @@
       "name": "RAB_CN5D",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1118,7 +1219,8 @@
       "name": "RAB_CN5Z",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1127,7 +1229,8 @@
       "name": "RAB_PR0",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -1136,7 +1239,8 @@
       "name": "RAB_PR1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -1145,7 +1249,8 @@
       "name": "RAB_PR2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -1154,7 +1259,8 @@
       "name": "RAB_PR3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -1163,7 +1269,8 @@
       "name": "RAB_PR4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -1172,7 +1279,8 @@
       "name": "RAB_PR5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -1181,7 +1289,8 @@
       "name": "RAB_PZ2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1190,7 +1299,8 @@
       "name": "RAB_PZ3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1199,7 +1309,8 @@
       "name": "RAB_PZ4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1208,7 +1319,8 @@
       "name": "RAB_PZ5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1217,7 +1329,7 @@
       "name": "RAZ_ROZ1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1226,7 +1338,7 @@
       "name": "RAZ_ROZ2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1235,7 +1347,7 @@
       "name": "ROZ_BAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1244,7 +1356,7 @@
       "name": "ROZ_COL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1253,7 +1365,7 @@
       "name": "ROZ_COLIN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1262,7 +1374,7 @@
       "name": "ROZ_COLOU",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1271,7 +1383,7 @@
       "name": "ROZ_COLVY",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1280,7 +1392,7 @@
       "name": "ROZ_LAR",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1289,7 +1401,7 @@
       "name": "ROZ_LAR3D",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1298,7 +1410,7 @@
       "name": "ROZ_LARIN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1307,7 +1419,7 @@
       "name": "ROZ_LAROU",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1316,7 +1428,7 @@
       "name": "ROZ_LARSEL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1325,7 +1437,7 @@
       "name": "ROZ_LARVY",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1334,7 +1446,7 @@
       "name": "ROZ_OS1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1343,7 +1455,7 @@
       "name": "ROZ_OS1IN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1352,7 +1464,7 @@
       "name": "ROZ_OS1OU",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1361,7 +1473,7 @@
       "name": "ROZ_OS1VY",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1370,7 +1482,7 @@
       "name": "ROZ_OS2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1379,7 +1491,7 @@
       "name": "ROZ_OS2IN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1388,7 +1500,7 @@
       "name": "ROZ_OS2OU",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1397,7 +1509,7 @@
       "name": "ROZ_OS2VY",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1406,7 +1518,7 @@
       "name": "ROZ_OS3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1415,7 +1527,7 @@
       "name": "ROZ_OS3IN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1424,7 +1536,7 @@
       "name": "ROZ_OS3OU",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1433,7 +1545,7 @@
       "name": "ROZ_OS3VY",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1442,7 +1554,7 @@
       "name": "ROZ_PAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1451,7 +1563,7 @@
       "name": "ROZ_PALIN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1460,7 +1572,7 @@
       "name": "ROZ_PRI",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1469,7 +1581,7 @@
       "name": "ROZ_SN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1478,7 +1590,7 @@
       "name": "ROZ_TRV",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1487,7 +1599,7 @@
       "name": "ROZ_TRVIN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1496,7 +1608,7 @@
       "name": "ROZ_TRVOU",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1505,7 +1617,7 @@
       "name": "ROZ_TRVVY",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1514,7 +1626,8 @@
       "name": "SAZBA_DPH",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -1523,7 +1636,7 @@
       "name": "SKLAD",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1532,7 +1645,7 @@
       "name": "SKUPINA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1541,7 +1654,8 @@
       "name": "SORTIMENT",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "12"
         }
       },
       "nullable": true
@@ -1550,7 +1664,8 @@
       "name": "SORT_MOR",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "254"
         }
       },
       "nullable": true
@@ -1559,7 +1674,8 @@
       "name": "SPOT_DAN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "10"
         }
       },
       "nullable": true
@@ -1568,7 +1684,8 @@
       "name": "STITKY",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "80"
         }
       },
       "nullable": true
@@ -1577,7 +1694,8 @@
       "name": "TEXT",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "96"
         }
       },
       "nullable": true
@@ -1586,7 +1704,8 @@
       "name": "TEXT_2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "64"
         }
       },
       "nullable": true
@@ -1595,7 +1714,8 @@
       "name": "TEXT_3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "64"
         }
       },
       "nullable": true
@@ -1604,7 +1724,8 @@
       "name": "TEXT_4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "64"
         }
       },
       "nullable": true
@@ -1613,7 +1734,8 @@
       "name": "TROZ_OS1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -1622,7 +1744,8 @@
       "name": "TROZ_OS2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -1631,7 +1754,8 @@
       "name": "TROZ_OS3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "20"
         }
       },
       "nullable": true
@@ -1640,7 +1764,8 @@
       "name": "U111",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "7"
         }
       },
       "nullable": true
@@ -1649,7 +1774,8 @@
       "name": "U112",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "7"
         }
       },
       "nullable": true
@@ -1658,7 +1784,8 @@
       "name": "U119",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "7"
         }
       },
       "nullable": true
@@ -1667,7 +1794,8 @@
       "name": "U500",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "7"
         }
       },
       "nullable": true
@@ -1676,7 +1804,8 @@
       "name": "U600",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "7"
         }
       },
       "nullable": true
@@ -1685,7 +1814,7 @@
       "name": "UCTY_IND",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1694,7 +1823,8 @@
       "name": "UC_NAK",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "3"
         }
       },
       "nullable": true
@@ -1703,7 +1833,8 @@
       "name": "UC_NAKA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "3"
         }
       },
       "nullable": true
@@ -1712,7 +1843,8 @@
       "name": "UC_PROD",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "3"
         }
       },
       "nullable": true
@@ -1721,7 +1853,8 @@
       "name": "UC_PRODA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "3"
         }
       },
       "nullable": true
@@ -1730,7 +1863,8 @@
       "name": "UMISTENI",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "12"
         }
       },
       "nullable": true
@@ -1739,7 +1873,8 @@
       "name": "USER_C01",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -1748,7 +1883,8 @@
       "name": "USER_C02",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -1757,7 +1893,8 @@
       "name": "USER_C03",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -1766,7 +1903,8 @@
       "name": "USER_C04",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -1775,7 +1913,8 @@
       "name": "USER_C05",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -1784,7 +1923,8 @@
       "name": "USER_C06",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -1793,7 +1933,8 @@
       "name": "USER_C07",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -1802,7 +1943,8 @@
       "name": "USER_C08",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -1811,7 +1953,8 @@
       "name": "VAHA_OBL1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -1820,7 +1963,8 @@
       "name": "VAHA_OBL2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -1829,7 +1973,8 @@
       "name": "VAHA_OBL3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -1838,7 +1983,8 @@
       "name": "VAHA_OBL4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -1847,7 +1993,8 @@
       "name": "VAHA_OBL5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -1856,7 +2003,8 @@
       "name": "VAHA_OBL6",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,7"
         }
       },
       "nullable": true
@@ -1865,7 +2013,7 @@
       "name": "VAR_BAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1874,7 +2022,7 @@
       "name": "VAR_PAL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -1883,7 +2031,8 @@
       "name": "VYDEJ",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,3"
         }
       },
       "nullable": true
@@ -1892,7 +2041,7 @@
       "name": "ZAOK",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1901,7 +2050,7 @@
       "name": "ZARUK_IN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1910,7 +2059,7 @@
       "name": "ZARUK_OUT",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1919,7 +2068,8 @@
       "name": "ZDROJ",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "1"
         }
       },
       "nullable": true
@@ -1928,7 +2078,7 @@
       "name": "ZMES_IN",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1937,7 +2087,7 @@
       "name": "ZMES_OUT",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1946,7 +2096,8 @@
       "name": "ZPEVNA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,5"
         }
       },
       "nullable": true
@@ -1955,7 +2106,7 @@
       "name": "ZPUSOB",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1964,7 +2115,7 @@
       "name": "ZPUS_OBL1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1973,7 +2124,7 @@
       "name": "ZPUS_OBL2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1982,7 +2133,7 @@
       "name": "ZPUS_OBL3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1991,7 +2142,7 @@
       "name": "ZPUS_OBL4",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -2000,7 +2151,7 @@
       "name": "ZPUS_OBL5",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -2009,7 +2160,7 @@
       "name": "ZPUS_OBL6",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -2018,7 +2169,8 @@
       "name": "akce",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "4"
         }
       },
       "nullable": true
@@ -2027,7 +2179,8 @@
       "name": "alt_ean",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "128"
         }
       },
       "nullable": true
@@ -2036,7 +2189,8 @@
       "name": "bez_cesty",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "64"
         }
       },
       "nullable": true
@@ -2045,7 +2199,8 @@
       "name": "cros_pozn",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -2054,7 +2209,8 @@
       "name": "cros_pozn2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -2063,7 +2219,8 @@
       "name": "cros_pozn3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -2072,7 +2229,8 @@
       "name": "crossref",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -2081,7 +2239,8 @@
       "name": "crossref2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -2090,7 +2249,8 @@
       "name": "crossref3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "240"
         }
       },
       "nullable": true
@@ -2117,7 +2277,8 @@
       "name": "id",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "36"
         }
       },
       "nullable": true
@@ -2135,7 +2296,8 @@
       "name": "kg_ks",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,11"
         }
       },
       "nullable": true
@@ -2144,7 +2306,8 @@
       "name": "nadrazen",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -2153,7 +2316,8 @@
       "name": "nazev_sort",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "112"
         }
       },
       "nullable": true
@@ -2162,7 +2326,8 @@
       "name": "skl_cena",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC",
+          "length": "17,2"
         }
       },
       "nullable": true
@@ -2171,7 +2336,8 @@
       "name": "sortimenty",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "128"
         }
       },
       "nullable": true
@@ -2180,7 +2346,7 @@
       "name": "timePec",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "TIMESTAMP"
         }
       },
       "nullable": true
@@ -2189,7 +2355,8 @@
       "name": "ts_kart",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "16"
         }
       },
       "nullable": true
@@ -2198,7 +2365,8 @@
       "name": "ts_pict",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "16"
         }
       },
       "nullable": true
@@ -2207,7 +2375,8 @@
       "name": "y_bal",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -2216,7 +2385,8 @@
       "name": "y_col",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -2225,7 +2395,8 @@
       "name": "y_lar",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -2234,7 +2405,8 @@
       "name": "y_ost1",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -2243,7 +2415,8 @@
       "name": "y_ost2",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -2252,7 +2425,8 @@
       "name": "y_ost3",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -2261,7 +2435,8 @@
       "name": "y_pal",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true
@@ -2270,7 +2445,8 @@
       "name": "y_sn",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "STRING",
+          "length": "48"
         }
       },
       "nullable": true

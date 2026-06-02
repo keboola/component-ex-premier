@@ -1,0 +1,58 @@
+FA_IN,FA_OUT,KOD_DPH,SAZBA,SAZBA_DPH,TEXT,UCET
+true,true,01,3,0.0,Neuskutečněná plnění,
+true,false,02,0,0.0,Odpočet daně při změně režimu,343100
+true,false,02,0,0.0,Odpočet daně při změně režimu,343100
+true,false,08,2,21.0,USKUTEČNĚNÁ: Základ vrácené daně,343200
+true,false,09,0,0.0,Nákupy od neplátců,
+true,false,10,0,0.0,Osvobozená plnění,
+true,false,12,0,0.0,PŘIJATÁ: Z dovozu - sazba,343100
+true,false,13,0,0.0,PŘIJATÁ: Z dovozu - sazba,343100
+true,false,14,1,12.0,PŘIJATÁ: Z tuzemska - sazba,343010
+true,false,15,2,21.0,PŘIJATÁ: Z tuzemska - sazba,343020
+true,false,16,0,0.0,PŘIJATÁ: zboží z EU - snížená sazba,
+true,false,17,0,0.0,PŘIJATÁ: zboží z EU - základní sazba,
+true,false,18,0,0.0,PŘIJATÁ: služby z EU - snížená sazba,
+true,false,19,0,0.0,PŘIJATÁ: služby z EU - základní sazba,
+true,false,20,0,0.0,PŘIJATÁ: režim přenesení DP - základní sazba,
+true,true,21,0,0.0,třístranný obchod,
+true,false,23,0,0.0,PŘIJATÁ: pořízení majeteku z EU,
+false,true,24,3,19.0,USKUTEČNĚNÁ: zboží do EU s DPH,379
+true,false,28,2,21.0,PŘIJATÁ: pořízení majetku z tuzemska,343100
+false,true,30,0,0.0,NEUSKUTEČNĚNÁ (např. zálohy),
+false,true,31,0,0.0,USKUTEČNĚNÁ: Osvobozená,
+false,true,32,0,0.0,USKUTEČNĚNÁ: Vývoz zboží,
+false,true,33,0,0.0,USKUTEČNĚNÁ: Vývoz služeb,
+false,true,35,1,12.0,USKUTEČNĚNÁ: Základ daně,343200
+false,true,36,2,21.0,USKUTEČNĚNÁ: Základ daně,343200
+false,true,37,0,0.0,USKUTEČNĚNÁ: zboží do EU,
+false,true,38,2,21.0,Uskutečněná - zvláštní režim § 90,343200
+false,true,39,0,0.0,USKUTEČNĚNÁ: služby do EU,
+false,false,41,0,0.0,Vypořádání: Daň na vstupu,
+false,false,42,0,0.0,Vypořádání: Daň na výstupu,
+false,true,43,0,0.0,USKUTEČNĚNÁ: přenesení daňové povinnosti,
+false,true,49,2,21.0,Prodej zboží TAX FREE,343400
+false,true,5,2,21.0,PŘIJATÁ: Z tuzemska - sazba,343100
+true,false,50,2,21.0,Vrácené DPH zahr. osobám,379100
+true,false,61,3,22.0,PŘIJATÁ: služby z EU - polsko,
+true,false,70,3,9.0,PŘIJATÁ: insolvence (stará sazba),343200
+true,true,71,3,0.0,Neuskutečněná plnění,
+true,false,72,1,12.0,PŘIJATÁ: insolvence,343200
+true,false,73,1,12.0,PŘIJATÁ: Z tuzemska - sazba,343010
+true,false,74,2,21.0,PŘIJATÁ: Z tuzemska - sazba,343020
+true,false,76,2,21.0,PŘIJATÁ: Z tuzemska - sazba,343020
+false,true,77,0,0.0,USKUTEČNĚNÁ: Osvobozená nekrácená,
+false,true,79,3,19.0,Uskutečněná - Uskutečněná 19% v SK,379000
+false,true,81,3,19.0,USKUTEČNĚNÁ: insolvence (stará sazba),343200
+false,true,82,1,12.0,USKUTEČNĚNÁ: insolvence,343200
+false,true,83,2,21.0,USKUTEČNĚNÁ: insolvence,343200
+true,false,88,0,0.0,PŘIJATÁ zboží z EU - stará sazba 19%,
+true,false,89,3,10.0,PŘIJATÁ: Z tuzemska - sazba,343010
+true,false,91,3,20.0,PŘIJATÁ: stará sazba,343100
+false,true,92,3,20.0,USKUTEČNĚNÁ: stará sazba,343200
+true,false,93,3,14.0,PŘIJATÁ: stará sazba,343100
+false,true,94,3,14.0,USKUTEČNĚNÁ: stará sazba,343200
+true,false,95,3,9.0,PŘIJATÁ: stará sazba,343100
+true,false,96,3,19.0,PŘIJATÁ: stará sazba,343100
+false,true,97,3,9.0,USKUTEČNĚNÁ: stará sazba,343200
+false,true,98,3,19.0,USKUTEČNĚNÁ: stará sazba,343200
+false,true,99,3,10.0,USKUTEČNĚNÁ: Základ daně,343200

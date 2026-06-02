@@ -12,14 +12,18 @@ import os
 import sys
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from keboola.component.exceptions import UserException
 
 # Ensure src is importable (already done by tests/__init__.py, but explicit here too)
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from component import _TIMESTAMP_FLOOR, Component, ObjectSpec
+from keboola.component.dao import SupportedDataTypes
+
+from client import PremierClientError
+from component import _TIMESTAMP_FLOOR, OBJECT_SPECS, Component, ObjectSpec
+from configuration import ObjectType
 
 # ---------------------------------------------------------------------------
 # Fixture datadir that has a complete, valid config (no live API needed)
@@ -307,8 +311,11 @@ class TestSerializeValue(unittest.TestCase):
     def test_none_passthrough(self):
         self.assertIsNone(Component._serialize_value(None))
 
-    def test_bool_passthrough(self):
-        self.assertEqual(Component._serialize_value(True), True)
+    def test_bool_true_renders_as_lowercase_string(self):
+        self.assertEqual(Component._serialize_value(True), "true")
+
+    def test_bool_false_renders_as_lowercase_string(self):
+        self.assertEqual(Component._serialize_value(False), "false")
 
     def test_dict_is_json_encoded(self):
         val = {"key": "value", "num": 1}
@@ -334,6 +341,105 @@ class TestSerializeValue(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# _infer_base_type
+# ---------------------------------------------------------------------------
+
+
+class TestInferBaseType(unittest.TestCase):
+    def _dtype(self, values):
+        """Return the SupportedDataTypes for inferred base type."""
+        return Component._infer_base_type(values)["base"].dtype
+
+    def test_empty_list_returns_string(self):
+        self.assertEqual(self._dtype([]), SupportedDataTypes.STRING)
+
+    def test_all_bool_returns_boolean(self):
+        self.assertEqual(self._dtype([True, False, True]), SupportedDataTypes.BOOLEAN)
+
+    def test_all_int_returns_integer(self):
+        self.assertEqual(self._dtype([1, 2, 3]), SupportedDataTypes.INTEGER)
+
+    def test_all_float_returns_numeric(self):
+        self.assertEqual(self._dtype([1.5, 2.0, 3.7]), SupportedDataTypes.NUMERIC)
+
+    def test_mixed_int_and_float_returns_numeric(self):
+        self.assertEqual(self._dtype([1, 2.5, 3]), SupportedDataTypes.NUMERIC)
+
+    def test_all_string_returns_string(self):
+        self.assertEqual(self._dtype(["a", "b"]), SupportedDataTypes.STRING)
+
+    def test_mixed_int_and_string_returns_string(self):
+        self.assertEqual(self._dtype([1, "two"]), SupportedDataTypes.STRING)
+
+    def test_bool_not_treated_as_integer(self):
+        """bool is a subclass of int; a list of bools must be BOOLEAN not INTEGER."""
+        self.assertNotEqual(self._dtype([True, False]), SupportedDataTypes.INTEGER)
+        self.assertEqual(self._dtype([True, False]), SupportedDataTypes.BOOLEAN)
+
+    def test_mixed_bool_and_int_returns_string(self):
+        """Mixed booleans and integers (not all bool) must fall back to STRING."""
+        self.assertEqual(self._dtype([True, 1, 2]), SupportedDataTypes.STRING)
+
+    def test_single_int_returns_integer(self):
+        self.assertEqual(self._dtype([42]), SupportedDataTypes.INTEGER)
+
+    def test_single_float_returns_numeric(self):
+        self.assertEqual(self._dtype([3.14]), SupportedDataTypes.NUMERIC)
+
+
+# ---------------------------------------------------------------------------
+# _build_schema
+# ---------------------------------------------------------------------------
+
+
+class TestBuildSchema(unittest.TestCase):
+    def test_pk_column_has_primary_key_true_and_nullable_false(self):
+        records = [{"INTER": "FA-001", "AMOUNT": 500}]
+        columns = ["AMOUNT", "INTER"]
+        schema = Component._build_schema(records, columns, primary_key=["INTER"], type_fields={})
+        self.assertTrue(schema["INTER"].primary_key)
+        self.assertFalse(schema["INTER"].nullable)
+
+    def test_non_pk_column_is_nullable(self):
+        records = [{"INTER": "FA-001", "AMOUNT": 500}]
+        columns = ["AMOUNT", "INTER"]
+        schema = Component._build_schema(records, columns, primary_key=["INTER"], type_fields={})
+        self.assertTrue(schema["AMOUNT"].nullable)
+        self.assertFalse(schema["AMOUNT"].primary_key)
+
+    def test_integer_column_inferred_correctly(self):
+        records = [{"ID": 1}, {"ID": 2}]
+        schema = Component._build_schema(records, ["ID"], primary_key=[], type_fields={})
+        self.assertEqual(schema["ID"].data_types["base"].dtype, SupportedDataTypes.INTEGER)
+
+    def test_boolean_column_inferred_correctly(self):
+        records = [{"FLAG": True}, {"FLAG": False}]
+        schema = Component._build_schema(records, ["FLAG"], primary_key=[], type_fields={})
+        self.assertEqual(schema["FLAG"].data_types["base"].dtype, SupportedDataTypes.BOOLEAN)
+
+    def test_string_column_inferred_correctly(self):
+        records = [{"NAME": "Alice"}, {"NAME": "Bob"}]
+        schema = Component._build_schema(records, ["NAME"], primary_key=[], type_fields={})
+        self.assertEqual(schema["NAME"].data_types["base"].dtype, SupportedDataTypes.STRING)
+
+    def test_all_columns_present_in_schema(self):
+        records = [{"A": 1, "B": "x"}, {"A": 2, "B": "y"}]
+        schema = Component._build_schema(records, ["A", "B"], primary_key=["A"], type_fields={})
+        self.assertIn("A", schema)
+        self.assertIn("B", schema)
+
+    def test_type_fields_overrides_value_inference(self):
+        """A column whose values are all strings but INFO says decimal/2 must be NUMERIC."""
+        # The values look like strings (as API might return), but type_fields says decimal
+        records = [{"CELKEM": "1234.56"}, {"CELKEM": "789.00"}]
+        type_fields = {
+            "CELKEM": {"fiels_name": "CELKEM", "field_type": "decimal", "field_width": 17, "field_decimal": 2, "fields_null": True},
+        }
+        schema = Component._build_schema(records, ["CELKEM"], primary_key=[], type_fields=type_fields)
+        self.assertEqual(schema["CELKEM"].data_types["base"].dtype, SupportedDataTypes.NUMERIC)
+
+
+# ---------------------------------------------------------------------------
 # _save_records
 # ---------------------------------------------------------------------------
 
@@ -341,11 +447,14 @@ class TestSerializeValue(unittest.TestCase):
 class TestSaveRecords(unittest.TestCase):
     def setUp(self):
         self.comp = _make_component()
+        # A mock client that returns empty type_fields (no INFO table configured on spec)
+        self.mock_client = MagicMock()
+        self.mock_client.execute_command.return_value = []
 
     def test_skips_output_when_records_empty(self):
         spec = ObjectSpec("FA_OUT", "invoices_issued", ["INTER"])
         with patch.object(self.comp, "create_out_table_definition") as mock_create:
-            self.comp._save_records([], spec)
+            self.comp._save_records([], spec, self.mock_client)
         mock_create.assert_not_called()
 
     def test_raises_user_exception_when_pk_columns_entirely_absent(self):
@@ -357,7 +466,7 @@ class TestSaveRecords(unittest.TestCase):
         out_dir.mkdir(parents=True, exist_ok=True)
 
         with self.assertRaises(UserException) as ctx:
-            self.comp._save_records(records, spec)
+            self.comp._save_records(records, spec, self.mock_client)
 
         self.assertIn("INTER", str(ctx.exception))
         # No output file must have been written.
@@ -370,7 +479,7 @@ class TestSaveRecords(unittest.TestCase):
         out_dir = Path(_UNIT_HELPER_DATADIR) / "out" / "tables"
         out_dir.mkdir(parents=True, exist_ok=True)
 
-        self.comp._save_records(records, spec)
+        self.comp._save_records(records, spec, self.mock_client)
 
         with open(out_dir / "invoices_issued.csv.manifest") as f:
             manifest = json.load(f)
@@ -385,15 +494,30 @@ class TestSaveRecords(unittest.TestCase):
         out_dir = Path(_UNIT_HELPER_DATADIR) / "out" / "tables"
         out_dir.mkdir(parents=True, exist_ok=True)
 
-        self.comp._save_records(records, spec)
+        self.comp._save_records(records, spec, self.mock_client)
 
-        # The component writes headerless CSV (no writeheader call); read raw rows.
+        # The component now writes a header row followed by data rows.
         # Columns are sorted alphabetically by _collect_columns: AMOUNT < INTER.
         with open(out_dir / "invoices_issued.csv") as f:
             rows = list(csv.reader(f))
-        self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0][0], "1000")    # AMOUNT column (sorted first)
-        self.assertEqual(rows[0][1], "FA-001")  # INTER column (sorted second)
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0], ["AMOUNT", "INTER"])  # header row
+        self.assertEqual(rows[1][0], "1000")    # AMOUNT column (sorted first)
+        self.assertEqual(rows[1][1], "FA-001")  # INTER column (sorted second)
+
+    def test_csv_has_header_has_header_in_manifest(self):
+        """The manifest must carry has_header=True when using the typed schema."""
+        spec = ObjectSpec("FA_OUT", "invoices_issued", ["INTER"])
+        records = [{"INTER": "FA-001", "AMOUNT": 1000}]
+
+        out_dir = Path(_UNIT_HELPER_DATADIR) / "out" / "tables"
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        self.comp._save_records(records, spec, self.mock_client)
+
+        with open(out_dir / "invoices_issued.csv.manifest") as f:
+            manifest = json.load(f)
+        self.assertTrue(manifest.get("has_header"))
 
     def tearDown(self):
         """Clean written output files so tests don't interfere with each other."""
@@ -449,36 +573,41 @@ class TestBuildClient(unittest.TestCase):
             comp._build_client()
         self.assertIn("base_url", str(ctx.exception))
 
-    def test_raises_when_username_missing(self):
-        comp = self._comp_with_connection(**{"username": ""})
-        with self.assertRaises(UserException) as ctx:
-            comp._build_client()
-        self.assertIn("username", str(ctx.exception))
-
-    def test_raises_when_password_missing(self):
-        comp = self._comp_with_connection(**{"#password": ""})
-        with self.assertRaises(UserException) as ctx:
-            comp._build_client()
-        self.assertIn("#password", str(ctx.exception))
-
     def test_raises_when_id_uj_missing(self):
         comp = self._comp_with_connection(**{"id_uj": ""})
         with self.assertRaises(UserException) as ctx:
             comp._build_client()
         self.assertIn("id_uj", str(ctx.exception))
 
-    def test_raises_lists_all_missing_fields(self):
-        comp = self._comp_with_connection(**{"username": "", "id_uj": ""})
+    def test_raises_lists_all_missing_required_fields(self):
+        """Only base_url and id_uj are required; username/password are optional."""
+        comp = self._comp_with_connection(**{"base_url": "", "id_uj": ""})
         with self.assertRaises(UserException) as ctx:
             comp._build_client()
         msg = str(ctx.exception)
-        self.assertIn("username", msg)
+        self.assertIn("base_url", msg)
         self.assertIn("id_uj", msg)
 
     def test_returns_client_when_all_fields_present(self):
         from client import PremierClient
 
         comp = self._comp_with_connection()
+        client = comp._build_client()
+        self.assertIsInstance(client, PremierClient)
+
+    def test_returns_anonymous_client_when_username_and_password_omitted(self):
+        """username/password are optional — omitting them must NOT raise."""
+        from client import PremierClient
+
+        comp = self._comp_with_connection(**{"username": "", "#password": ""})
+        client = comp._build_client()
+        self.assertIsInstance(client, PremierClient)
+
+    def test_returns_client_when_only_password_omitted(self):
+        """Omitting only the password (with a username) must NOT raise — auth is optional."""
+        from client import PremierClient
+
+        comp = self._comp_with_connection(**{"#password": ""})
         client = comp._build_client()
         self.assertIsInstance(client, PremierClient)
 
@@ -500,6 +629,250 @@ class TestRunErrors(unittest.TestCase):
         )
         with self.assertRaises(UserException):
             comp.run()
+
+
+# ---------------------------------------------------------------------------
+# _premier_type_to_base
+# ---------------------------------------------------------------------------
+
+
+class TestPremierTypeToBase(unittest.TestCase):
+    def _dtype(self, meta):
+        """Return the SupportedDataTypes for a given field meta dict."""
+        return Component._premier_type_to_base(meta)["base"].dtype
+
+    def _bt(self, meta):
+        """Return the full BaseType dict for a given field meta dict."""
+        return Component._premier_type_to_base(meta)
+
+    def test_bit_returns_boolean(self):
+        self.assertEqual(self._dtype({"field_type": "bit", "field_width": 1, "field_decimal": 0}), SupportedDataTypes.BOOLEAN)
+
+    def test_decimal_with_decimals_returns_numeric(self):
+        self.assertEqual(
+            self._dtype({"field_type": "decimal", "field_width": 17, "field_decimal": 2}),
+            SupportedDataTypes.NUMERIC,
+        )
+
+    def test_decimal_with_decimals_has_correct_length(self):
+        """NUMERIC for decimal with decimals must encode length as 'width,dec'."""
+        bt = self._bt({"field_type": "decimal", "field_width": 17, "field_decimal": 2})
+        self.assertEqual(bt["base"].length, "17,2")
+
+    def test_decimal_zero_decimals_returns_integer(self):
+        self.assertEqual(
+            self._dtype({"field_type": "decimal", "field_width": 10, "field_decimal": 0}),
+            SupportedDataTypes.INTEGER,
+        )
+
+    def test_datetime_returns_timestamp(self):
+        self.assertEqual(
+            self._dtype({"field_type": "datetime", "field_width": None, "field_decimal": 0}),
+            SupportedDataTypes.TIMESTAMP,
+        )
+
+    def test_datetime2_returns_timestamp(self):
+        self.assertEqual(
+            self._dtype({"field_type": "datetime2", "field_width": None, "field_decimal": 0}),
+            SupportedDataTypes.TIMESTAMP,
+        )
+
+    def test_smalldatetime_returns_timestamp(self):
+        self.assertEqual(
+            self._dtype({"field_type": "smalldatetime", "field_width": None, "field_decimal": 0}),
+            SupportedDataTypes.TIMESTAMP,
+        )
+
+    def test_date_returns_date(self):
+        self.assertEqual(
+            self._dtype({"field_type": "date", "field_width": None, "field_decimal": 0}),
+            SupportedDataTypes.DATE,
+        )
+
+    def test_int_returns_integer(self):
+        self.assertEqual(
+            self._dtype({"field_type": "int", "field_width": 4, "field_decimal": 0}),
+            SupportedDataTypes.INTEGER,
+        )
+
+    def test_smallint_returns_integer(self):
+        self.assertEqual(
+            self._dtype({"field_type": "smallint", "field_width": 2, "field_decimal": 0}),
+            SupportedDataTypes.INTEGER,
+        )
+
+    def test_bigint_returns_integer(self):
+        self.assertEqual(
+            self._dtype({"field_type": "bigint", "field_width": 8, "field_decimal": 0}),
+            SupportedDataTypes.INTEGER,
+        )
+
+    def test_float_returns_float(self):
+        self.assertEqual(
+            self._dtype({"field_type": "float", "field_width": 8, "field_decimal": 0}),
+            SupportedDataTypes.FLOAT,
+        )
+
+    def test_real_returns_float(self):
+        self.assertEqual(
+            self._dtype({"field_type": "real", "field_width": 4, "field_decimal": 0}),
+            SupportedDataTypes.FLOAT,
+        )
+
+    def test_char_with_width_returns_string_with_length(self):
+        bt = self._bt({"field_type": "char", "field_width": 20, "field_decimal": 0})
+        self.assertEqual(bt["base"].dtype, SupportedDataTypes.STRING)
+        self.assertEqual(bt["base"].length, "20")
+
+    def test_varchar_with_width_returns_string_with_length(self):
+        bt = self._bt({"field_type": "varchar", "field_width": 255, "field_decimal": 0})
+        self.assertEqual(bt["base"].dtype, SupportedDataTypes.STRING)
+        self.assertEqual(bt["base"].length, "255")
+
+    def test_uniqueidentifier_returns_string(self):
+        self.assertEqual(
+            self._dtype({"field_type": "uniqueidentifier", "field_width": 16, "field_decimal": 0}),
+            SupportedDataTypes.STRING,
+        )
+
+    def test_timestamp_rowversion_returns_string(self):
+        """SQL timestamp (rowversion) is NOT a datetime — must map to STRING."""
+        self.assertEqual(
+            self._dtype({"field_type": "timestamp", "field_width": 8, "field_decimal": 0}),
+            SupportedDataTypes.STRING,
+        )
+
+    def test_unknown_type_returns_string(self):
+        self.assertEqual(
+            self._dtype({"field_type": "binary", "field_width": 8, "field_decimal": 0}),
+            SupportedDataTypes.STRING,
+        )
+
+    def test_empty_type_returns_string(self):
+        self.assertEqual(
+            self._dtype({"field_type": "", "field_width": None, "field_decimal": 0}),
+            SupportedDataTypes.STRING,
+        )
+
+
+# ---------------------------------------------------------------------------
+# _fetch_table_types
+# ---------------------------------------------------------------------------
+
+
+class TestFetchTableTypes(unittest.TestCase):
+    def test_returns_empty_when_info_table_is_none(self):
+        """No client call must be made when info_table is None."""
+        mock_client = MagicMock()
+        result = Component._fetch_table_types(mock_client, None)
+        self.assertEqual(result, {})
+        mock_client.execute_command.assert_not_called()
+
+    def test_returns_empty_string_info_table_falsy(self):
+        """Empty string info_table must also return {} without any call."""
+        mock_client = MagicMock()
+        result = Component._fetch_table_types(mock_client, "")
+        self.assertEqual(result, {})
+        mock_client.execute_command.assert_not_called()
+
+    def test_parses_fake_info_response_keyed_by_uppercase_name(self):
+        """A well-formed INFO response must be parsed into a dict keyed by uppercase column name."""
+        mock_client = MagicMock()
+        mock_client.execute_command.return_value = [
+            {
+                "tableStruct": {
+                    "tabFields": [
+                        {
+                            "fiels_name": "CELKEM",
+                            "field_type": "decimal",
+                            "field_width": 17,
+                            "field_decimal": 2,
+                            "fields_null": True,
+                        }
+                    ]
+                }
+            }
+        ]
+        result = Component._fetch_table_types(mock_client, "FA_OUT")
+        self.assertIn("CELKEM", result)
+        self.assertEqual(result["CELKEM"]["field_type"], "decimal")
+        self.assertEqual(result["CELKEM"]["field_decimal"], 2)
+
+    def test_key_is_uppercased(self):
+        """Column names in the INFO response must be stored under their UPPERCASED key."""
+        mock_client = MagicMock()
+        mock_client.execute_command.return_value = [
+            {
+                "tableStruct": {
+                    "tabFields": [
+                        {"fiels_name": "CelKem", "field_type": "decimal", "field_width": 10, "field_decimal": 0, "fields_null": False}
+                    ]
+                }
+            }
+        ]
+        result = Component._fetch_table_types(mock_client, "FA_OUT")
+        self.assertIn("CELKEM", result)
+        self.assertNotIn("CelKem", result)
+
+    def test_returns_empty_when_client_raises_premier_client_error(self):
+        """PremierClientError from INFO must be swallowed and return {}."""
+        mock_client = MagicMock()
+        mock_client.execute_command.side_effect = PremierClientError("INFO failed")
+        result = Component._fetch_table_types(mock_client, "FA_OUT")
+        self.assertEqual(result, {})
+
+
+# ---------------------------------------------------------------------------
+# OBJECT_SPECS sanity check
+# ---------------------------------------------------------------------------
+
+
+class TestObjectSpecsSanity(unittest.TestCase):
+    _EXPECTED_KEYS = {
+        ObjectType.customers,
+        ObjectType.suppliers,
+        ObjectType.invoices_issued,
+        ObjectType.invoices_received,
+        ObjectType.advance_invoices_issued,
+        ObjectType.advance_invoices_received,
+        ObjectType.orders_received,
+        ObjectType.orders_issued,
+        ObjectType.products,
+        ObjectType.stock_receipts,
+        ObjectType.stock_issues,
+        ObjectType.stock_levels,
+        ObjectType.warehouses,
+        ObjectType.vat_rates,
+        ObjectType.cost_centers,
+        ObjectType.jobs,
+        ObjectType.document_series,
+    }
+
+    def test_has_exactly_17_entries(self):
+        self.assertEqual(len(OBJECT_SPECS), 17)
+
+    def test_all_expected_keys_present(self):
+        self.assertEqual(set(OBJECT_SPECS.keys()), self._EXPECTED_KEYS)
+
+    def test_stock_levels_pk_is_cislo_and_sklad(self):
+        spec = OBJECT_SPECS[ObjectType.stock_levels]
+        self.assertEqual(spec.primary_key, ["cislo", "sklad"])
+
+    def test_vat_rates_pk_is_KOD_DPH(self):
+        spec = OBJECT_SPECS[ObjectType.vat_rates]
+        self.assertEqual(spec.primary_key, ["KOD_DPH"])
+
+    def test_invoices_issued_info_table_is_FA_OUT(self):
+        spec = OBJECT_SPECS[ObjectType.invoices_issued]
+        self.assertEqual(spec.info_table, "FA_OUT")
+
+    def test_customers_info_table_is_none(self):
+        spec = OBJECT_SPECS[ObjectType.customers]
+        self.assertIsNone(spec.info_table)
+
+    def test_suppliers_info_table_is_none(self):
+        spec = OBJECT_SPECS[ObjectType.suppliers]
+        self.assertIsNone(spec.info_table)
 
 
 if __name__ == "__main__":

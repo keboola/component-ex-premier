@@ -1,0 +1,12 @@
+{
+  "exit_code": 1,
+  "stderr": "Missing required connection parameter(s): id_uj\nTraceback (most recent call last):\n  File \"src/component.py\", line 354, in <module>\n    comp.execute_action()\n    ~~~~~~~~~~~~~~~~~~~^^\n  File \"/Users/matyasjirat/VSCodeProjects/Keboola/component-ex-premier/.venv/lib/python3.14/site-packages/keboola/component/base.py\", line 251, in execute_action\n    return self._do_execute_action()\n           ~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"/Users/matyasjirat/VSCodeProjects/Keboola/component-ex-premier/.venv/lib/python3.14/site-packages/keboola/component/base.py\", line 265, in _do_execute_action\n    return action_method()\n  File \"src/component.py\", line 122, in run\n    client = self._build_client()\n  File \"src/component.py\", line 150, in _build_client\n    raise UserException(f\"Missing required connection parameter(s): {', '.join(missing)}\")\nkeboola.component.exceptions.UserException: Missing required connection parameter(s): id_uj\n",
+  "logs": [
+    {
+      "level": "ERROR",
+      "logger": "root",
+      "message": "Missing required connection parameter(s): id_uj\nTraceback (most recent call last):\n  File \"src/component.py\", line 354, in <module>\n    comp.execute_action()\n    ~~~~~~~~~~~~~~~~~~~^^\n  File \"/Users/matyasjirat/VSCodeProjects/Keboola/component-ex-premier/.venv/lib/python3.14/site-packages/keboola/component/base.py\", line 251, in execute_action\n    return self._do_execute_action()\n           ~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"/Users/matyasjirat/VSCodeProjects/Keboola/component-ex-premier/.venv/lib/python3.14/site-packages/keboola/component/base.py\", line 265, in _do_execute_action\n    return action_method()\n  File \"src/component.py\", line 122, in run\n    client = self._build_client()\n  File \"src/component.py\", line 150, in _build_client\n    raise UserException(f\"Missing required connection parameter(s): {', '.join(missing)}\")\nkeboola.component.exceptions.UserException: Missing required connection parameter(s): id_uj",
+      "timestamp": "2025-06-01T12:00:00.000Z"
+    }
+  ]
+}

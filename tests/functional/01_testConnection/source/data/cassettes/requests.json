@@ -1,7 +1,7 @@
 {
-  "_metadata": {"freeze_time": "2025-06-01T12:00:00", "keboola_vcr_version": "0.5.0", "recorded_at": "2026-06-01T17:40:54.201154+00:00"},
+  "_metadata": {"freeze_time": "2025-06-01T12:00:00", "keboola_vcr_version": "0.5.0", "recorded_at": "2026-06-02T14:03:36.514003+00:00"},
   "interactions": [
-    {"request": {"body": "{\"command\": {\"inComm\": \"VERZEAPI\"}}", "headers": {"Accept": ["*/*"], "Content-Length": ["35"], "Content-Type": ["application/json"]}, "method": "POST", "uri": "https://dev.premier.cz:12375/api/comm"}, "response": {"body": {"string": "{\"Result\":\"OK\",\"CommandIn\":\"VERZEAPI\",\"Data\":{\"ApiComPrem.dll\": {\"verze\":\"1.0.1.280\",\"datum\":\"26.05.2026 15:37\"\r\n  },\"ApiComSQL.dll\": {\"verze\":\"1.0.1.237\",\"datum\":\"26.05.2026 15:37\"\r\n  },\"VerzeInSQL\": {\"verze\":\"1.0.1.237\"\r\n  }\r\n}}\r\n\r\n"}, "headers": {"Content-Length": ["234"], "Content-Type": ["application/json; charset=UTF-8"]}, "status": {"code": 200, "message": "OK"}}}
+    {"request": {"body": "{\"command\": {\"inComm\": \"VERZEAPI\"}}", "headers": {"Accept": ["*/*"], "Content-Length": ["35"], "Content-Type": ["application/json; charset=utf-8"]}, "method": "POST", "uri": "https://dev.premier.cz:12375/api/comm"}, "response": {"body": {"string": "{\"Result\":\"OK\",\"CommandIn\":\"VERZEAPI\",\"Data\":{\"ApiComPrem.dll\": {\"verze\":\"1.0.1.280\",\"datum\":\"26.05.2026 15:37\"\r\n  },\"ApiComSQL.dll\": {\"verze\":\"1.0.1.237\",\"datum\":\"26.05.2026 15:37\"\r\n  },\"VerzeInSQL\": {\"verze\":\"1.0.1.237\"\r\n  }\r\n}}\r\n\r\n"}, "headers": {"Content-Length": ["234"], "Content-Type": ["application/json; charset=UTF-8"]}, "status": {"code": 200, "message": "OK"}}}
   ],
   "version": 1
 }

@@ -1,0 +1,27 @@
+{
+  "files": {},
+  "hash_algorithm": "sha256",
+  "tables": {
+    "vat_rates.csv": {
+      "columns": [
+        "FA_IN",
+        "FA_OUT",
+        "KOD_DPH",
+        "SAZBA",
+        "SAZBA_DPH",
+        "TEXT",
+        "UCET"
+      ],
+      "hash": "sha256:a6608579c176daeeede1ec5b20384e8bfa2b43d639a0fd635cdd971c89ab594a",
+      "row_count": 58,
+      "size_bytes": 3365
+    },
+    "vat_rates.csv.manifest": {
+      "columns": null,
+      "hash": "sha256:1a070e2b733823a69ccb1f8b2ffee6991e2c5905bec50ff8a41a53500bf9e0ff",
+      "row_count": null,
+      "size_bytes": 1179
+    }
+  },
+  "version": "1.0"
+}

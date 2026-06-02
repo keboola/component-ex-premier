@@ -22,7 +22,19 @@ class ObjectType(StrEnum):
     suppliers = "suppliers"
     invoices_issued = "invoices_issued"
     invoices_received = "invoices_received"
+    advance_invoices_issued = "advance_invoices_issued"
+    advance_invoices_received = "advance_invoices_received"
+    orders_received = "orders_received"
+    orders_issued = "orders_issued"
     products = "products"
+    stock_receipts = "stock_receipts"
+    stock_issues = "stock_issues"
+    stock_levels = "stock_levels"
+    warehouses = "warehouses"
+    vat_rates = "vat_rates"
+    cost_centers = "cost_centers"
+    jobs = "jobs"
+    document_series = "document_series"
 
 
 class LoadType(StrEnum):

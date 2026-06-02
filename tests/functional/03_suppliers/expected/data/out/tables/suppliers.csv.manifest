@@ -4,7 +4,7 @@
   "delimiter": ",",
   "enclosure": "\"",
   "manifest_type": "out",
-  "has_header": false,
+  "has_header": true,
   "schema": [
     {
       "name": "ALT_NAZEV",
@@ -64,7 +64,7 @@
       "name": "BARVA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -172,7 +172,7 @@
       "name": "DOBA_DOD",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -181,7 +181,7 @@
       "name": "DODAVATEL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -190,7 +190,7 @@
       "name": "DONT_UPOM",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -253,7 +253,7 @@
       "name": "EDI_TYP",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -271,7 +271,7 @@
       "name": "FAKT_TYP",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -289,7 +289,7 @@
       "name": "FORMA_OS",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -298,7 +298,7 @@
       "name": "GDPR",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -352,7 +352,7 @@
       "name": "GDPR_PO",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -370,7 +370,7 @@
       "name": "GDPR_PRAV",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -379,7 +379,7 @@
       "name": "GDPR_SML",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -388,7 +388,7 @@
       "name": "GDPR_SOUH",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -487,7 +487,7 @@
       "name": "IDENT_AI",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -496,10 +496,9 @@
       "name": "INTER",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
-      "nullable": true,
       "primary_key": true
     },
     {
@@ -524,7 +523,7 @@
       "name": "IN_DOPR",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -542,7 +541,7 @@
       "name": "IS_KRED324",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -551,7 +550,7 @@
       "name": "JAKA_SDOD",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -560,7 +559,7 @@
       "name": "JAKA_SPL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -650,7 +649,7 @@
       "name": "KREDIT",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -659,7 +658,7 @@
       "name": "KREDIT_OB",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -731,7 +730,7 @@
       "name": "NEPLAT_DPH",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -740,7 +739,7 @@
       "name": "ODBERATEL",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -749,7 +748,7 @@
       "name": "ONLY_CASH",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "BOOLEAN"
         }
       },
       "nullable": true
@@ -875,7 +874,7 @@
       "name": "PROVIZE",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -911,7 +910,7 @@
       "name": "PTS",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -956,7 +955,7 @@
       "name": "RAB_SKUP",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -974,7 +973,7 @@
       "name": "SKONTO_ODB",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -983,7 +982,7 @@
       "name": "SKON_D_ODB",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1010,7 +1009,7 @@
       "name": "SLEVA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1028,7 +1027,7 @@
       "name": "SPLATNOST",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1037,7 +1036,7 @@
       "name": "SPLAT_DOD",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1064,7 +1063,7 @@
       "name": "STKOD",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1136,7 +1135,7 @@
       "name": "UROK",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1145,7 +1144,7 @@
       "name": "UR_DOBA",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "INTEGER"
         }
       },
       "nullable": true
@@ -1676,7 +1675,7 @@
       "name": "USER_N01",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1685,7 +1684,7 @@
       "name": "USER_N02",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1694,7 +1693,7 @@
       "name": "USER_N03",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1703,7 +1702,7 @@
       "name": "USER_N04",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1712,7 +1711,7 @@
       "name": "USER_N05",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1721,7 +1720,7 @@
       "name": "USER_N06",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1730,7 +1729,7 @@
       "name": "USER_N07",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1739,7 +1738,7 @@
       "name": "USER_N08",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1748,7 +1747,7 @@
       "name": "USER_N09",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1757,7 +1756,7 @@
       "name": "USER_N10",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1766,7 +1765,7 @@
       "name": "USER_N11",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1775,7 +1774,7 @@
       "name": "USER_N12",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1784,7 +1783,7 @@
       "name": "USER_N13",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1793,7 +1792,7 @@
       "name": "USER_N14",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1802,7 +1801,7 @@
       "name": "USER_N15",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1811,7 +1810,7 @@
       "name": "USER_N16",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1820,7 +1819,7 @@
       "name": "USER_N17",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1829,7 +1828,7 @@
       "name": "USER_N18",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1838,7 +1837,7 @@
       "name": "USER_N19",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1847,7 +1846,7 @@
       "name": "USER_N20",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1856,7 +1855,7 @@
       "name": "USER_N21",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1865,7 +1864,7 @@
       "name": "USER_N22",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1874,7 +1873,7 @@
       "name": "USER_N23",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1883,7 +1882,7 @@
       "name": "USER_N24",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1892,7 +1891,7 @@
       "name": "USER_N25",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1901,7 +1900,7 @@
       "name": "USER_N26",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1910,7 +1909,7 @@
       "name": "USER_N27",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1919,7 +1918,7 @@
       "name": "USER_N28",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1928,7 +1927,7 @@
       "name": "USER_N29",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1937,7 +1936,7 @@
       "name": "USER_N30",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1946,7 +1945,7 @@
       "name": "USER_N31",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true
@@ -1955,7 +1954,7 @@
       "name": "USER_N32",
       "data_type": {
         "base": {
-          "type": "STRING"
+          "type": "NUMERIC"
         }
       },
       "nullable": true

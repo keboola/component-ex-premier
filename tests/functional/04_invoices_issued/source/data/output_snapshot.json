@@ -4,37 +4,37 @@
   "tables": {
     "invoices_issued.csv": {
       "columns": [
-        "555.0",
-        "200502870",
-        "Mega Bike",
-        "2005-11-05T00:00:00",
-        "2005-10-26T00:00:00",
-        "2005-10-26T00:00:00",
-        "",
-        "VF",
-        "P\u0159evodn\u00ed p\u0159\u00edkaz",
-        "27123568",
-        "234B4F86-7B28-466D-8AB6-6A4325965334",
-        "",
-        "59",
-        "0008",
-        "Menka Roman",
-        "",
-        "[{\"FAKTURA\": 59, \"TEXT\": \"Dle dodac\u00edch list\u016f\", \"MNOZSTVI\": 0.0, \"MJ\": \"\", \"CENA_MJ\": 0.0, \"CENA_SLV\": 0.0, \"SLEVA_PR\": 0.0, \"CENA\": 555.0, \"CENA_DPH\": 0.0, \"SAZBA_DPH\": 0.0, \"KOD_DPH\": \"\", \"MATERIAL\": \"\", \"ZDROJ\": 0, \"OPERACE\": \"\", \"POL_KOD\": \"\", \"SLEVA\": 0.0, \"ID\": \"4E12DBEF-6889-4947-9341-154C3EB9E002\", \"PORDER\": 0}]",
-        "0",
-        "0",
-        "0.0",
-        "0"
+        "CELKEM",
+        "CISLO",
+        "CISLO_ODB",
+        "DATUM_SPL",
+        "DATUM_USK",
+        "DATUM_VYS",
+        "DOD_LIST",
+        "DOKLAD",
+        "FORMA",
+        "ICO_ODB",
+        "ID",
+        "ID_PAR",
+        "INTER",
+        "K_SYMBOL",
+        "NAZEV_ODB",
+        "OBJEDNAVKA",
+        "POLOZKY",
+        "PUV_DOKL",
+        "STKOD",
+        "ZALOHA",
+        "ZKKOD"
       ],
-      "hash": "sha256:b251535146e3368bb787afd6890008397546fd6504143ed43aeb75dfa7acb512",
-      "row_count": 2283,
-      "size_bytes": 1786250
+      "hash": "sha256:c30038a305772c87b4cc8a744d67d7fdd90846d65148a62182431af91a87a686",
+      "row_count": 2284,
+      "size_bytes": 1786416
     },
     "invoices_issued.csv.manifest": {
       "columns": null,
-      "hash": "sha256:30d9d2602f19f36fcc1d5980fea7d2c90ea9a66685183fe611062fafff952fdd",
+      "hash": "sha256:242a3e6dac0d7b5b3ec7154701afce355a1feaaf1039eceaf78f60f56993644c",
       "row_count": null,
-      "size_bytes": 3250
+      "size_bytes": 3528
     }
   },
   "version": "1.0"

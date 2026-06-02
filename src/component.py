@@ -14,6 +14,7 @@ from datetime import datetime
 from typing import Any
 
 from keboola.component.base import ComponentBase, sync_action
+from keboola.component.dao import BaseType, ColumnDefinition
 from keboola.component.exceptions import UserException
 from keboola.vcr import DefaultSanitizer
 
@@ -47,6 +48,8 @@ class ObjectSpec:
         always_timestamp: command rejects empty params, so always send a timestamp (floor on full load).
         accepts_dates: command accepts dat_od/dat_do range filters.
         needs_warehouse: command requires a warehouse number (sklad).
+        info_table: PREMIER table name for the INFO structure lookup (authoritative column types).
+            None when the command has no directly-queryable table — types are then inferred from values.
     """
 
     command: str
@@ -56,18 +59,49 @@ class ObjectSpec:
     always_timestamp: bool = field(default=False)
     accepts_dates: bool = field(default=False)
     needs_warehouse: bool = field(default=False)
+    info_table: str | None = field(default=None)
 
 
 OBJECT_SPECS: dict[ObjectType, ObjectSpec] = {
+    # Partners — PARTNERI has no directly-queryable INFO table, so types are inferred.
     ObjectType.customers: ObjectSpec("PARTNERI", "customers", ["INTER"], part_typ="OD"),
     ObjectType.suppliers: ObjectSpec("PARTNERI", "suppliers", ["INTER"], part_typ="DO"),
+    # Invoices and orders — require at least one filter (timestamp floor) and accept a date range.
     ObjectType.invoices_issued: ObjectSpec(
-        "FA_OUT", "invoices_issued", ["INTER"], always_timestamp=True, accepts_dates=True
+        "FA_OUT", "invoices_issued", ["INTER"], always_timestamp=True, accepts_dates=True, info_table="FA_OUT"
     ),
     ObjectType.invoices_received: ObjectSpec(
-        "FA_IN", "invoices_received", ["INTER"], always_timestamp=True, accepts_dates=True
+        "FA_IN", "invoices_received", ["INTER"], always_timestamp=True, accepts_dates=True, info_table="FA_IN"
     ),
-    ObjectType.products: ObjectSpec("CENIK", "products", ["INTER"], needs_warehouse=True),
+    ObjectType.advance_invoices_issued: ObjectSpec(
+        "FA_ZOUT", "advance_invoices_issued", ["INTER"], always_timestamp=True, accepts_dates=True, info_table="FA_ZOUT"
+    ),
+    ObjectType.advance_invoices_received: ObjectSpec(
+        "FA_ZIN", "advance_invoices_received", ["INTER"], always_timestamp=True, accepts_dates=True, info_table="FA_ZIN"
+    ),
+    ObjectType.orders_received: ObjectSpec(
+        "OB_IN", "orders_received", ["INTER"], always_timestamp=True, accepts_dates=True, info_table="OB_IN"
+    ),
+    ObjectType.orders_issued: ObjectSpec(
+        "OB_OUT", "orders_issued", ["INTER"], always_timestamp=True, accepts_dates=True, info_table="OB_OUT"
+    ),
+    # Stock — all require a warehouse number (sklad).
+    ObjectType.products: ObjectSpec("CENIK", "products", ["INTER"], needs_warehouse=True, info_table="CENIK"),
+    ObjectType.stock_receipts: ObjectSpec(
+        "PRIJEMKY", "stock_receipts", ["INTER"], needs_warehouse=True, info_table="PRIJEMKY"
+    ),
+    ObjectType.stock_issues: ObjectSpec(
+        "VYDEJKY", "stock_issues", ["INTER"], needs_warehouse=True, info_table="VYDEJKY"
+    ),
+    ObjectType.stock_levels: ObjectSpec(
+        "SKLAD_STAV", "stock_levels", ["cislo", "sklad"], needs_warehouse=True, info_table="SKLAD_STAV"
+    ),
+    # Codebooks / registers — small static lists, no filters required.
+    ObjectType.warehouses: ObjectSpec("SEZ_SKL", "warehouses", ["CISLO"], info_table="SEZ_SKL"),
+    ObjectType.vat_rates: ObjectSpec("SAZBY_DPH", "vat_rates", ["KOD_DPH"], info_table="SAZBY_DPH"),
+    ObjectType.cost_centers: ObjectSpec("STREDISK", "cost_centers", ["stkod"], info_table="STREDISK"),
+    ObjectType.jobs: ObjectSpec("ZAKAZKA", "jobs", ["zkkod"], always_timestamp=True, info_table="ZAKAZKA"),
+    ObjectType.document_series: ObjectSpec("DOKL_PU", "document_series", ["ID"], info_table="DOKL_PU"),
 }
 
 
@@ -98,7 +132,7 @@ class Component(ComponentBase):
             raise UserException(str(exc)) from exc
         logging.info("Received %d record(s) for '%s'", len(records), spec.table_name)
 
-        self._save_records(records, spec)
+        self._save_records(records, spec, client)
         self.write_state_file({_STATE_LAST_TIMESTAMP: run_started_at})
 
     # --- setup helpers -----------------------------------------------------
@@ -110,16 +144,8 @@ class Component(ComponentBase):
 
     def _build_client(self) -> PremierClient:
         conn = self.params.connection
-        missing = [
-            name
-            for name, value in (
-                ("base_url", conn.base_url),
-                ("username", conn.username),
-                ("#password", conn.password),
-                ("id_uj", conn.id_uj),
-            )
-            if not value
-        ]
+        # username/password are optional — some PREMIER servers run with auth disabled.
+        missing = [name for name, value in (("base_url", conn.base_url), ("id_uj", conn.id_uj)) if not value]
         if missing:
             raise UserException(f"Missing required connection parameter(s): {', '.join(missing)}")
         return PremierClient(conn.base_url, conn.username, conn.password, conn.id_uj)
@@ -153,7 +179,7 @@ class Component(ComponentBase):
 
     # --- output ------------------------------------------------------------
 
-    def _save_records(self, records: list[dict[str, Any]], spec: ObjectSpec) -> None:
+    def _save_records(self, records: list[dict[str, Any]], spec: ObjectSpec, client: PremierClient) -> None:
         if not records:
             logging.info("No records to write for '%s' — skipping output table.", spec.table_name)
             return
@@ -168,19 +194,117 @@ class Component(ComponentBase):
                 f"response. Cannot write the table safely — the PREMIER API response shape may have changed."
             )
 
+        type_fields = self._fetch_table_types(client, spec.info_table)
+        schema = self._build_schema(records, columns, primary_key, type_fields)
         table = self.create_out_table_definition(
             f"{spec.table_name}.csv",
             primary_key=primary_key,
             incremental=self.params.destination.incremental,
-            columns=columns,
+            schema=schema,
+            has_header=True,
         )
 
         with open(table.full_path, mode="w", encoding="utf-8", newline="") as out_file:
             writer = csv.DictWriter(out_file, fieldnames=columns, extrasaction="ignore")
+            writer.writeheader()
             for record in records:
                 writer.writerow({col: self._serialize_value(record.get(col)) for col in columns})
 
         self.write_manifest(table)
+
+    @staticmethod
+    def _fetch_table_types(client: PremierClient, info_table: str | None) -> dict[str, dict[str, Any]]:
+        """Fetch authoritative column metadata for a table via the INFO command.
+
+        Returns a map keyed by UPPERCASED column name (PREMIER responses are not
+        case-consistent). Returns an empty map — and never raises — when no table is
+        configured or INFO fails, so the caller falls back to value-based inference.
+        """
+        if not info_table:
+            return {}
+        try:
+            data = client.execute_command("INFO", parameters={"table_name": info_table})
+        except PremierClientError as exc:
+            logging.warning("Could not load column types from INFO for table '%s': %s", info_table, exc)
+            return {}
+
+        fields: dict[str, dict[str, Any]] = {}
+        if isinstance(data, list) and data and isinstance(data[0], dict):
+            for field_def in data[0].get("tableStruct", {}).get("tabFields", []):
+                name = field_def.get("fiels_name")  # note: PREMIER's key is "fiels_name"
+                if name:
+                    fields[name.upper()] = field_def
+        return fields
+
+    @staticmethod
+    def _build_schema(
+        records: list[dict[str, Any]],
+        columns: list[str],
+        primary_key: list[str],
+        type_fields: dict[str, dict[str, Any]],
+    ) -> dict[str, ColumnDefinition]:
+        """Build a typed manifest schema.
+
+        Uses PREMIER's authoritative column metadata (INFO) where available, and falls
+        back to inferring the type from the JSON values for columns INFO doesn't describe.
+        """
+        pk = set(primary_key)
+        schema: dict[str, ColumnDefinition] = {}
+        for column in columns:
+            is_pk = column in pk
+            meta = type_fields.get(column.upper())
+            if meta:
+                base_type = Component._premier_type_to_base(meta)
+            else:
+                values = [v for record in records if (v := record.get(column)) is not None]
+                base_type = Component._infer_base_type(values)
+            # Non-PK columns are left nullable: a command's joined/computed response can
+            # carry nulls even where the base table column is NOT NULL, and a strict
+            # non-nullable manifest would then fail the Storage load.
+            schema[column] = ColumnDefinition(data_types=base_type, primary_key=is_pk, nullable=not is_pk)
+        return schema
+
+    @staticmethod
+    def _premier_type_to_base(meta: dict[str, Any]) -> BaseType:
+        """Map a PREMIER (SQL Server) column definition to a Keboola base type."""
+        sql_type = str(meta.get("field_type") or "").lower()
+        width = meta.get("field_width")
+        decimals = meta.get("field_decimal") or 0
+
+        if sql_type == "bit":
+            return BaseType.boolean()
+        if sql_type == "date":
+            return BaseType.date()
+        if sql_type in ("datetime", "datetime2", "smalldatetime"):
+            return BaseType.timestamp()
+        if sql_type in ("decimal", "numeric", "money", "smallmoney"):
+            if decimals and int(decimals) > 0:
+                return BaseType.numeric(length=f"{width},{decimals}")
+            return BaseType.integer()
+        if sql_type in ("int", "smallint", "tinyint", "bigint"):
+            return BaseType.integer()
+        if sql_type in ("float", "real"):
+            return BaseType.float()
+        if sql_type in ("char", "varchar", "nchar", "nvarchar") and width:
+            return BaseType.string(length=str(width))
+        # text/ntext/memo, uniqueidentifier, timestamp (SQL rowversion), binary, unknown → STRING
+        return BaseType.string()
+
+    @staticmethod
+    def _infer_base_type(values: list[Any]) -> BaseType:
+        """Map the Python types of a column's non-null values to a Keboola base type."""
+        if not values:
+            return BaseType.string()
+        if all(isinstance(v, bool) for v in values):
+            return BaseType.boolean()
+        # bool is a subclass of int, so exclude it from the numeric checks.
+        non_bool = [v for v in values if not isinstance(v, bool)]
+        if len(non_bool) == len(values):
+            if all(isinstance(v, int) for v in non_bool):
+                return BaseType.integer()
+            if all(isinstance(v, (int, float)) for v in non_bool):
+                return BaseType.numeric()
+        return BaseType.string()
 
     @staticmethod
     def _collect_columns(records: list[dict[str, Any]]) -> list[str]:
@@ -197,7 +321,13 @@ class Component(ComponentBase):
 
     @staticmethod
     def _serialize_value(value: Any) -> Any:
-        """Flatten nested structures to JSON so they fit a single CSV cell."""
+        """Render a value for a single CSV cell.
+
+        Booleans become lowercase ``true``/``false`` so the BOOLEAN base type parses
+        them; nested structures are JSON-encoded; scalars pass through unchanged.
+        """
+        if isinstance(value, bool):
+            return "true" if value else "false"
         if isinstance(value, (dict, list)):
             return json.dumps(value, ensure_ascii=False)
         return value

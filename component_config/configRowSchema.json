@@ -17,14 +17,38 @@
             "suppliers",
             "invoices_issued",
             "invoices_received",
-            "products"
+            "advance_invoices_issued",
+            "advance_invoices_received",
+            "orders_received",
+            "orders_issued",
+            "products",
+            "stock_receipts",
+            "stock_issues",
+            "stock_levels",
+            "warehouses",
+            "vat_rates",
+            "cost_centers",
+            "jobs",
+            "document_series"
           ],
           "enum_titles": [
-            "Customers (odběratelé)",
-            "Suppliers (dodavatelé)",
-            "Issued invoices (faktury vydané)",
-            "Received invoices (faktury přijaté)",
-            "Products / stock items (sortiment)"
+            "Customers",
+            "Suppliers",
+            "Issued Invoices",
+            "Received Invoices",
+            "Issued Advance Invoices",
+            "Received Advance Invoices",
+            "Received Orders",
+            "Issued Orders",
+            "Products",
+            "Stock Receipts",
+            "Stock Issues",
+            "Stock Levels",
+            "Warehouses",
+            "VAT Rates",
+            "Cost Centers",
+            "Jobs",
+            "Document Series"
           ],
           "propertyOrder": 1
         },
@@ -36,7 +60,7 @@
           "propertyOrder": 2,
           "options": {
             "dependencies": {
-              "object": ["invoices_issued", "invoices_received"]
+              "object": ["invoices_issued", "invoices_received", "advance_invoices_issued", "advance_invoices_received", "orders_received", "orders_issued"]
             }
           }
         },
@@ -48,19 +72,19 @@
           "propertyOrder": 3,
           "options": {
             "dependencies": {
-              "object": ["invoices_issued", "invoices_received"]
+              "object": ["invoices_issued", "invoices_received", "advance_invoices_issued", "advance_invoices_received", "orders_received", "orders_issued"]
             }
           }
         },
         "warehouse": {
           "type": "integer",
           "title": "Warehouse number",
-          "description": "REQUIRED when 'Object to extract' is Products. Warehouse (sklad) number to read stock cards from; leave blank for other objects.",
+          "description": "REQUIRED when Object to extract is Products. Warehouse number to read stock cards from; leave blank for other objects.",
           "minimum": 1,
           "propertyOrder": 4,
           "options": {
             "dependencies": {
-              "object": "products"
+              "object": ["products", "stock_receipts", "stock_issues", "stock_levels"]
             }
           }
         }
@@ -80,8 +104,8 @@
             "full_load"
           ],
           "enum_titles": [
-            "Incremental load",
-            "Full load"
+            "Incremental Load",
+            "Full Load"
           ],
           "default": "incremental_load",
           "propertyOrder": 1

@@ -4,7 +4,8 @@ The PREMIER API is RPC-style: every request is a JSON ``POST`` to a single
 ``/api/comm`` endpoint, with the operation selected via the ``inComm`` command
 name. Authentication is HTTP Basic (PREMIER user/password) plus a custom
 ``ID-UJ`` header that selects the accounting unit (GUID issued by the customer's
-API service admin).
+API service admin). HTTP Basic auth is optional — some PREMIER servers (e.g. the
+public test server) run with authentication disabled.
 
 Responses share a common envelope::
 
@@ -18,8 +19,10 @@ from typing import Any
 
 from keboola.http_client import HttpClient
 
-# The API documents a hard 2-minute processing limit per command.
-_REQUEST_TIMEOUT_SECONDS = 130
+# (connect, read) timeouts. Short connect timeout so an unreachable host fails
+# fast (e.g. Test Connection) instead of hanging; generous read timeout to honour
+# the API's documented 2-minute processing limit per command.
+_REQUEST_TIMEOUT_SECONDS = (15, 130)
 _RETRY_STATUS = (500, 502, 503, 504)
 
 
@@ -30,15 +33,17 @@ class PremierClientError(Exception):
 class PremierClient(HttpClient):
     """Thin wrapper around the single ``/api/comm`` RPC endpoint."""
 
-    def __init__(self, base_url: str, username: str, password: str, id_uj: str) -> None:
+    def __init__(self, base_url: str, username: str = "", password: str = "", id_uj: str = "") -> None:
         normalized = self._normalize_base_url(base_url)
+        # Send HTTP Basic only when both parts are supplied; otherwise connect anonymously.
+        auth = (username, password) if username and password else None
         super().__init__(
             base_url=f"{normalized}/api/",
             max_retries=5,
             backoff_factor=1.0,
             status_forcelist=_RETRY_STATUS,
-            default_http_header={"Content-Type": "application/json", "ID-UJ": id_uj},
-            auth=(username, password),
+            default_http_header={"Content-Type": "application/json; charset=utf-8", "ID-UJ": id_uj},
+            auth=auth,
         )
 
     @staticmethod

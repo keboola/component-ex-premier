@@ -80,6 +80,61 @@ class TestNormalizeBaseUrl(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# 1b. Authentication and headers
+# ---------------------------------------------------------------------------
+
+
+class TestClientAuthAndHeaders(unittest.TestCase):
+    def test_auth_tuple_set_when_username_and_password_provided(self):
+        """With both credentials supplied, the session must send HTTP Basic auth."""
+        client = PremierClient(
+            base_url="https://example.com",
+            username="user",
+            password="pass",
+            id_uj="test-guid",
+        )
+        self.assertIsNotNone(client._auth)
+        self.assertEqual(client._auth, ("user", "pass"))
+
+    def test_auth_is_none_when_no_credentials_provided(self):
+        """Anonymous client (no username/password) must have auth=None."""
+        client = PremierClient(
+            base_url="https://example.com",
+            id_uj="test-guid",
+        )
+        self.assertIsNone(client._auth)
+
+    def test_auth_is_none_when_only_username_provided(self):
+        """Partial credentials (username only) must also result in auth=None."""
+        client = PremierClient(
+            base_url="https://example.com",
+            username="user",
+            id_uj="test-guid",
+        )
+        self.assertIsNone(client._auth)
+
+    def test_auth_is_none_when_only_password_provided(self):
+        """Partial credentials (password only) must also result in auth=None."""
+        client = PremierClient(
+            base_url="https://example.com",
+            password="pass",
+            id_uj="test-guid",
+        )
+        self.assertIsNone(client._auth)
+
+    def test_default_content_type_header_includes_charset(self):
+        """Default Content-Type must be 'application/json; charset=utf-8'."""
+        client = _client()
+        content_type = client._default_header.get("Content-Type", "")
+        self.assertEqual(content_type, "application/json; charset=utf-8")
+
+    def test_request_timeout_is_tuple(self):
+        """Timeout must be a (connect, read) tuple (15, 130)."""
+        import client.premier_client as pc_module
+        self.assertEqual(pc_module._REQUEST_TIMEOUT_SECONDS, (15, 130))
+
+
+# ---------------------------------------------------------------------------
 # 2. Payload building
 # ---------------------------------------------------------------------------
 
