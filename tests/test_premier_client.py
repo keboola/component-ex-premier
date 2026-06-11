@@ -131,6 +131,7 @@ class TestClientAuthAndHeaders(unittest.TestCase):
     def test_request_timeout_is_tuple(self):
         """Timeout must be a (connect, read) tuple (15, 130)."""
         import client.premier_client as pc_module
+
         self.assertEqual(pc_module._REQUEST_TIMEOUT_SECONDS, (15, 130))
 
 

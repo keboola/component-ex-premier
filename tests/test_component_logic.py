@@ -433,7 +433,13 @@ class TestBuildSchema(unittest.TestCase):
         # The values look like strings (as API might return), but type_fields says decimal
         records = [{"CELKEM": "1234.56"}, {"CELKEM": "789.00"}]
         type_fields = {
-            "CELKEM": {"fiels_name": "CELKEM", "field_type": "decimal", "field_width": 17, "field_decimal": 2, "fields_null": True},
+            "CELKEM": {
+                "fiels_name": "CELKEM",
+                "field_type": "decimal",
+                "field_width": 17,
+                "field_decimal": 2,
+                "fields_null": True,
+            },
         }
         schema = Component._build_schema(records, ["CELKEM"], primary_key=[], type_fields=type_fields)
         self.assertEqual(schema["CELKEM"].data_types["base"].dtype, SupportedDataTypes.NUMERIC)
@@ -502,7 +508,7 @@ class TestSaveRecords(unittest.TestCase):
             rows = list(csv.reader(f))
         self.assertEqual(len(rows), 2)
         self.assertEqual(rows[0], ["AMOUNT", "INTER"])  # header row
-        self.assertEqual(rows[1][0], "1000")    # AMOUNT column (sorted first)
+        self.assertEqual(rows[1][0], "1000")  # AMOUNT column (sorted first)
         self.assertEqual(rows[1][1], "FA-001")  # INTER column (sorted second)
 
     def test_csv_has_header_has_header_in_manifest(self):
@@ -646,7 +652,9 @@ class TestPremierTypeToBase(unittest.TestCase):
         return Component._premier_type_to_base(meta)
 
     def test_bit_returns_boolean(self):
-        self.assertEqual(self._dtype({"field_type": "bit", "field_width": 1, "field_decimal": 0}), SupportedDataTypes.BOOLEAN)
+        self.assertEqual(
+            self._dtype({"field_type": "bit", "field_width": 1, "field_decimal": 0}), SupportedDataTypes.BOOLEAN
+        )
 
     def test_decimal_with_decimals_returns_numeric(self):
         self.assertEqual(
@@ -658,6 +666,13 @@ class TestPremierTypeToBase(unittest.TestCase):
         """NUMERIC for decimal with decimals must encode length as 'width,dec'."""
         bt = self._bt({"field_type": "decimal", "field_width": 17, "field_decimal": 2})
         self.assertEqual(bt["base"].length, "17,2")
+
+    def test_decimal_with_decimals_but_no_width_returns_lengthless_numeric(self):
+        """A decimal column whose INFO width is None must yield NUMERIC with no length,
+        not a broken 'None,2' length spec (which would raise on the output path)."""
+        bt = self._bt({"field_type": "decimal", "field_width": None, "field_decimal": 2})
+        self.assertEqual(bt["base"].dtype, SupportedDataTypes.NUMERIC)
+        self.assertIsNone(bt["base"].length)
 
     def test_decimal_zero_decimals_returns_integer(self):
         self.assertEqual(
@@ -805,7 +820,13 @@ class TestFetchTableTypes(unittest.TestCase):
             {
                 "tableStruct": {
                     "tabFields": [
-                        {"fiels_name": "CelKem", "field_type": "decimal", "field_width": 10, "field_decimal": 0, "fields_null": False}
+                        {
+                            "fiels_name": "CelKem",
+                            "field_type": "decimal",
+                            "field_width": 10,
+                            "field_decimal": 0,
+                            "fields_null": False,
+                        }
                     ]
                 }
             }

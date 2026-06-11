@@ -14,14 +14,12 @@ dependencies = [
 dev = [
     "freezegun>=1.5.1",
     "keboola.datadirtest>=2.2.0",
-    "mock>=5.2.0",
     "pytest>=9.0.2",
     "ruff>=0.15.2",
 ]
 
 [tool.ruff]
 line-length = 120
-target-version = "py314"
 
 [tool.ruff.lint]
 extend-select = ["I", "UP", "G"]

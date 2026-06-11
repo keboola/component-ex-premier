@@ -110,10 +110,10 @@ class Component(ComponentBase):
         super().__init__()
         self.params = Configuration(**self.configuration.parameters)
         if self.params.debug:
-            # Scope DEBUG to our own modules; keep urllib3/requests quiet so the
-            # HTTP Basic Authorization header is never emitted to the job log.
-            logging.getLogger("component").setLevel(logging.DEBUG)
-            logging.getLogger("client").setLevel(logging.DEBUG)
+            # ComponentBase already flips the root logger to DEBUG when the debug
+            # param is set, so our modules' logs surface automatically. We only need
+            # to keep urllib3/requests quiet so the HTTP Basic Authorization header is
+            # never emitted to the job log.
             logging.getLogger("urllib3").setLevel(logging.WARNING)
 
     def run(self):
@@ -132,7 +132,15 @@ class Component(ComponentBase):
             raise UserException(str(exc)) from exc
         logging.info("Received %d record(s) for '%s'", len(records), spec.table_name)
 
-        self._save_records(records, spec, client)
+        try:
+            self._save_records(records, spec, client)
+        except PremierClientError as exc:
+            raise UserException(str(exc)) from exc
+        except (KeyError, ValueError, TypeError, OSError) as exc:
+            # Type-mapping / CSV / manifest write failures are surfaced as a clean
+            # user error (exit 1) instead of a generic application error (exit 2).
+            raise UserException(f"Failed to write the '{spec.table_name}' output table: {exc}") from exc
+
         self.write_state_file({_STATE_LAST_TIMESTAMP: run_started_at})
 
     # --- setup helpers -----------------------------------------------------
@@ -279,7 +287,11 @@ class Component(ComponentBase):
             return BaseType.timestamp()
         if sql_type in ("decimal", "numeric", "money", "smallmoney"):
             if decimals and int(decimals) > 0:
-                return BaseType.numeric(length=f"{width},{decimals}")
+                # Without a precision (width) the length spec would be "None,2"; emit a
+                # length-less NUMERIC in that case so Storage applies its default precision.
+                if width:
+                    return BaseType.numeric(length=f"{width},{decimals}")
+                return BaseType.numeric()
             return BaseType.integer()
         if sql_type in ("int", "smallint", "tinyint", "bigint"):
             return BaseType.integer()
@@ -340,7 +352,7 @@ class Component(ComponentBase):
         try:
             client.test_connection()
         except PremierClientError as exc:
-            raise UserException(f"Connection failed: {exc}")
+            raise UserException(f"Connection failed: {exc}") from exc
         return {"status": "success"}
 
 
