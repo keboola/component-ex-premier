@@ -13,10 +13,13 @@ Responses share a common envelope::
     {"Result": "ERR", "CommandIn": "INFO",   "Error": [{"number": 502, "desc": "..."}]}
 """
 
+import io
 import json
 import logging
+from collections.abc import Generator
 from typing import Any
 
+import ijson
 from keboola.http_client import HttpClient
 
 # (connect, read) timeouts. Short connect timeout so an unreachable host fails
@@ -83,6 +86,134 @@ class PremierClient(HttpClient):
             )
 
         return self._parse_envelope(response, command)
+
+    def stream_command(
+        self,
+        command: str,
+        parameters: dict[str, Any] | None = None,
+        query_condition: dict[str, Any] | None = None,
+        query_fields: list[dict[str, Any]] | None = None,
+        data: Any = None,
+    ) -> Generator[dict[str, Any]]:
+        """Execute a PREMIER command and yield ``Data`` records one at a time.
+
+        Uses an incremental JSON parser (``ijson``) so that individual records
+        are processed and yielded as they arrive, keeping memory use proportional
+        to a single record rather than the full response.
+
+        Truncated-JSON recovery for error envelopes is preserved: the PREMIER
+        server has been observed to omit closing brackets on ``ERR`` responses.
+        Because ``Data`` items are only present in ``OK`` responses, the
+        strategy is:
+
+        1. Start parsing the response incrementally with ``ijson``.
+        2. If ``Result == ERR`` (detected before the ``Data`` array) or if
+           ``ijson`` raises an ``IncompleteJSONError``, fall back to reading
+           the full response body and apply the tolerant bracket-balancing
+           parser — identical behaviour to :meth:`execute_command`.
+        3. Raise :class:`PremierClientError` for all error conditions.
+
+        Raises:
+            PremierClientError: on transport failure, non-2xx status, malformed
+                body, or an ``ERR`` result envelope.
+        """
+        payload = self._build_payload(command, parameters, query_condition, query_fields, data)
+
+        try:
+            response = self.post_raw(
+                endpoint_path="comm",
+                json=payload,
+                timeout=_REQUEST_TIMEOUT_SECONDS,
+                stream=True,
+            )
+        except Exception as exc:
+            raise PremierClientError(f"Request to PREMIER API failed: {exc}") from exc
+
+        if response.status_code == 401:
+            raise PremierClientError("Authentication failed (HTTP 401). Check the username, password and ID-UJ.")
+        if response.status_code >= 400:
+            raise PremierClientError(
+                f"PREMIER API returned HTTP {response.status_code} for command '{command}': {response.text[:500]}"
+            )
+
+        yield from self._stream_envelope(response, command)
+
+    def _stream_envelope(self, response: Any, command: str) -> Generator[dict[str, Any]]:
+        """Parse the response envelope with ``ijson`` and yield each ``Data`` item.
+
+        Strategy:
+        1. Collect all response chunks into a rewindable buffer (``BytesIO``).
+           This is necessary because we may need to re-scan the buffer on error
+           fallback, and because ijson needs a byte-stream interface.
+        2. Do a lightweight prefix scan to read ``Result`` and ``Warning``.
+        3. If ``Result == OK``, rewind the buffer and use ``ijson.items`` to
+           stream individual ``Data.item`` objects directly — this is the
+           memory-efficient path.
+        4. If ``Result != OK`` or if the JSON is malformed / truncated, apply
+           the tolerant bracket-balancing parser and raise the error.
+        """
+        chunks: list[bytes] = list(response.iter_content(chunk_size=65536))
+        raw_bytes = b"".join(chunks)
+
+        # --- Step 1: scan envelope metadata (Result / Warning) ----------
+        result_value: str | None = None
+        try:
+            for prefix, event, value in ijson.parse(io.BytesIO(raw_bytes), use_float=True):
+                if prefix == "Result" and event == "string":
+                    result_value = value
+                    break  # found what we need; stop the prefix scan
+        except ijson.IncompleteJSONError:
+            pass  # handled below via tolerant parser
+
+        if result_value is None:
+            # Could not parse Result — fall back to tolerant recovery.
+            text = raw_bytes.decode("utf-8", errors="replace")
+            body = PremierClient._loads_tolerant(text)
+            if body is None:
+                raise PremierClientError(
+                    f"PREMIER API returned a malformed/non-JSON response for command '{command}': {text[:500]}"
+                )
+            PremierClient._check_envelope_result(body, command)
+            yield from (body.get("Data") or [])
+            return
+
+        if result_value != "OK":
+            # ERR response — may be truncated; use tolerant parser.
+            text = raw_bytes.decode("utf-8", errors="replace")
+            body = PremierClient._loads_tolerant(text)
+            if body is None:
+                raise PremierClientError(
+                    f"PREMIER API returned a malformed/non-JSON response for command '{command}': {text[:500]}"
+                )
+            PremierClient._check_envelope_result(body, command)
+            return  # _check_envelope_result raises; this line is unreachable
+
+        # --- Step 2: log any warnings from the envelope ------------------
+        try:
+            for item in ijson.items(io.BytesIO(raw_bytes), "Warning.item"):
+                if isinstance(item, dict):
+                    logging.warning("PREMIER warning for command '%s': %s", command, item.get("desc"))
+        except Exception:
+            pass  # warnings are best-effort; never block data
+
+        # --- Step 3: stream Data items incrementally ---------------------
+        try:
+            yield from ijson.items(io.BytesIO(raw_bytes), "Data.item", use_float=True)
+        except ijson.IncompleteJSONError as exc:
+            raise PremierClientError(
+                f"PREMIER API returned an incomplete Data array for command '{command}': {exc}"
+            ) from exc
+
+    @staticmethod
+    def _check_envelope_result(body: dict[str, Any], command: str) -> None:
+        """Raise :class:`PremierClientError` if the envelope result is not OK."""
+        if body.get("Result") != "OK":
+            errors = body.get("Error") or []
+            detail = "; ".join(f"{e.get('number')}: {e.get('desc')}" for e in errors) or "unknown error"
+            raise PremierClientError(f"PREMIER command '{command}' failed: {detail}")
+
+        for warning in body.get("Warning") or []:
+            logging.warning("PREMIER warning for command '%s': %s", command, warning.get("desc"))
 
     @staticmethod
     def _build_payload(

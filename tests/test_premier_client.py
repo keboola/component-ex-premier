@@ -424,5 +424,134 @@ class TestCloseUnbalancedBrackets(unittest.TestCase):
         self.assertEqual(parsed["key"], 'val"ue')
 
 
+# ---------------------------------------------------------------------------
+# 7. stream_command — streaming data iterator
+# ---------------------------------------------------------------------------
+
+
+def _make_streaming_response(status_code: int = 200, body: dict | None = None, text: str = "") -> MagicMock:
+    """Build a fake requests.Response that also supports iter_content (for streaming)."""
+    resp = _make_response(status_code, body=body, text=text)
+    # iter_content yields the body as a single chunk of bytes
+    raw_bytes = resp.text.encode("utf-8")
+    resp.iter_content.return_value = iter([raw_bytes])
+    return resp
+
+
+def _streaming_ok_response(data: list) -> MagicMock:
+    return _make_streaming_response(200, body={"Result": "OK", "CommandIn": "FA_OUT", "Data": data})
+
+
+def _streaming_err_response(command: str, errors: list) -> MagicMock:
+    return _make_streaming_response(200, body={"Result": "ERR", "CommandIn": command, "Error": errors})
+
+
+class TestStreamCommand(unittest.TestCase):
+    """Tests for PremierClient.stream_command() — the streaming iterator API."""
+
+    def test_yields_all_records_from_data_array(self):
+        client = _client()
+        records = [{"INTER": "FA-001", "AMOUNT": 1000}, {"INTER": "FA-002", "AMOUNT": 2000}]
+        with patch.object(client, "post_raw", return_value=_streaming_ok_response(records)):
+            result = list(client.stream_command("FA_OUT"))
+        self.assertEqual(result, records)
+
+    def test_yields_no_records_when_data_is_empty(self):
+        client = _client()
+        with patch.object(client, "post_raw", return_value=_streaming_ok_response([])):
+            result = list(client.stream_command("FA_OUT"))
+        self.assertEqual(result, [])
+
+    def test_yields_no_records_when_data_is_null(self):
+        client = _client()
+        resp = _make_streaming_response(200, body={"Result": "OK", "CommandIn": "FA_OUT", "Data": None})
+        with patch.object(client, "post_raw", return_value=resp):
+            result = list(client.stream_command("FA_OUT"))
+        self.assertEqual(result, [])
+
+    def test_raises_premier_client_error_on_err_result(self):
+        client = _client()
+        resp = _streaming_err_response("PARTNERI", [{"number": 502, "desc": "Access denied"}])
+        with patch.object(client, "post_raw", return_value=resp):
+            with self.assertRaises(PremierClientError) as ctx:
+                list(client.stream_command("PARTNERI"))
+        self.assertIn("502", str(ctx.exception))
+        self.assertIn("Access denied", str(ctx.exception))
+
+    def test_raises_on_http_401(self):
+        client = _client()
+        resp = _make_streaming_response(401, text="Unauthorized")
+        with patch.object(client, "post_raw", return_value=resp):
+            with self.assertRaises(PremierClientError) as ctx:
+                list(client.stream_command("PARTNERI"))
+        self.assertIn("401", str(ctx.exception))
+
+    def test_raises_on_http_500(self):
+        client = _client()
+        resp = _make_streaming_response(500, text="Server error")
+        with patch.object(client, "post_raw", return_value=resp):
+            with self.assertRaises(PremierClientError) as ctx:
+                list(client.stream_command("FA_OUT"))
+        self.assertIn("500", str(ctx.exception))
+
+    def test_raises_on_non_json_body(self):
+        client = _client()
+        resp = _make_streaming_response(200, text="<html>not json</html>")
+        with patch.object(client, "post_raw", return_value=resp):
+            with self.assertRaises(PremierClientError) as ctx:
+                list(client.stream_command("FA_OUT"))
+        self.assertIn("malformed", str(ctx.exception).lower())
+
+    def test_raises_when_post_raw_throws_transport_error(self):
+        client = _client()
+        with patch.object(client, "post_raw", side_effect=ConnectionError("timeout")):
+            with self.assertRaises(PremierClientError) as ctx:
+                list(client.stream_command("FA_OUT"))
+        self.assertIn("Request to PREMIER API failed", str(ctx.exception))
+
+    def test_truncated_err_body_is_recovered_and_raises(self):
+        """stream_command must surface the PREMIER error from a truncated ERR body
+        (missing closing ]}), applying the same tolerant-JSON recovery as execute_command."""
+        client = _client()
+        truncated_body = '{"Result":"ERR","Error":[{"number":403,"desc":"Forbidden resource"}'
+        resp = _make_streaming_response(200, text=truncated_body)
+        with patch.object(client, "post_raw", return_value=resp):
+            with self.assertRaises(PremierClientError) as ctx:
+                list(client.stream_command("FA_OUT"))
+        msg = str(ctx.exception)
+        self.assertIn("403", msg)
+        self.assertIn("Forbidden resource", msg)
+
+    def test_stream_command_returns_generator(self):
+        """stream_command must return an iterator (not a list)."""
+        import types
+
+        client = _client()
+        with patch.object(client, "post_raw", return_value=_streaming_ok_response([{"INTER": "1"}])):
+            result = client.stream_command("FA_OUT")
+        self.assertIsInstance(result, types.GeneratorType)
+
+    def test_large_dataset_yields_all_records(self):
+        """Verify stream_command correctly yields many records (boundary check)."""
+        client = _client()
+        records = [{"INTER": str(i), "VAL": i} for i in range(500)]
+        with patch.object(client, "post_raw", return_value=_streaming_ok_response(records)):
+            result = list(client.stream_command("FA_OUT"))
+        self.assertEqual(len(result), 500)
+        self.assertEqual(result[0]["INTER"], "0")
+        self.assertEqual(result[499]["INTER"], "499")
+
+    def test_stream_command_passes_parameters_to_post_raw(self):
+        """Parameters must be forwarded to post_raw in the same JSON envelope as execute_command."""
+        client = _client()
+        with patch.object(client, "post_raw", return_value=_streaming_ok_response([])) as mock_post:
+            list(client.stream_command("FA_OUT", parameters={"timestamp": "2024-01-01 00:00:00"}))
+        _, kwargs = mock_post.call_args
+        self.assertEqual(kwargs["endpoint_path"], "comm")
+        sent_json = kwargs["json"]
+        self.assertEqual(sent_json["command"]["inComm"], "FA_OUT")
+        self.assertEqual(sent_json["command"]["inParam"]["parameters"]["timestamp"], "2024-01-01 00:00:00")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -393,45 +393,46 @@ class TestInferBaseType(unittest.TestCase):
 
 
 class TestBuildSchema(unittest.TestCase):
+    """_build_schema takes value_samples (dict[col, list[non-null values]]) in the streaming API."""
+
     def test_pk_column_has_primary_key_true_and_nullable_false(self):
-        records = [{"INTER": "FA-001", "AMOUNT": 500}]
+        samples = {"AMOUNT": [500], "INTER": ["FA-001"]}
         columns = ["AMOUNT", "INTER"]
-        schema = Component._build_schema(records, columns, primary_key=["INTER"], type_fields={})
+        schema = Component._build_schema(samples, columns, primary_key=["INTER"], type_fields={})
         self.assertTrue(schema["INTER"].primary_key)
         self.assertFalse(schema["INTER"].nullable)
 
     def test_non_pk_column_is_nullable(self):
-        records = [{"INTER": "FA-001", "AMOUNT": 500}]
+        samples = {"AMOUNT": [500], "INTER": ["FA-001"]}
         columns = ["AMOUNT", "INTER"]
-        schema = Component._build_schema(records, columns, primary_key=["INTER"], type_fields={})
+        schema = Component._build_schema(samples, columns, primary_key=["INTER"], type_fields={})
         self.assertTrue(schema["AMOUNT"].nullable)
         self.assertFalse(schema["AMOUNT"].primary_key)
 
     def test_integer_column_inferred_correctly(self):
-        records = [{"ID": 1}, {"ID": 2}]
-        schema = Component._build_schema(records, ["ID"], primary_key=[], type_fields={})
+        samples = {"ID": [1, 2]}
+        schema = Component._build_schema(samples, ["ID"], primary_key=[], type_fields={})
         self.assertEqual(schema["ID"].data_types["base"].dtype, SupportedDataTypes.INTEGER)
 
     def test_boolean_column_inferred_correctly(self):
-        records = [{"FLAG": True}, {"FLAG": False}]
-        schema = Component._build_schema(records, ["FLAG"], primary_key=[], type_fields={})
+        samples = {"FLAG": [True, False]}
+        schema = Component._build_schema(samples, ["FLAG"], primary_key=[], type_fields={})
         self.assertEqual(schema["FLAG"].data_types["base"].dtype, SupportedDataTypes.BOOLEAN)
 
     def test_string_column_inferred_correctly(self):
-        records = [{"NAME": "Alice"}, {"NAME": "Bob"}]
-        schema = Component._build_schema(records, ["NAME"], primary_key=[], type_fields={})
+        samples = {"NAME": ["Alice", "Bob"]}
+        schema = Component._build_schema(samples, ["NAME"], primary_key=[], type_fields={})
         self.assertEqual(schema["NAME"].data_types["base"].dtype, SupportedDataTypes.STRING)
 
     def test_all_columns_present_in_schema(self):
-        records = [{"A": 1, "B": "x"}, {"A": 2, "B": "y"}]
-        schema = Component._build_schema(records, ["A", "B"], primary_key=["A"], type_fields={})
+        samples = {"A": [1, 2], "B": ["x", "y"]}
+        schema = Component._build_schema(samples, ["A", "B"], primary_key=["A"], type_fields={})
         self.assertIn("A", schema)
         self.assertIn("B", schema)
 
     def test_type_fields_overrides_value_inference(self):
         """A column whose values are all strings but INFO says decimal/2 must be NUMERIC."""
-        # The values look like strings (as API might return), but type_fields says decimal
-        records = [{"CELKEM": "1234.56"}, {"CELKEM": "789.00"}]
+        samples = {"CELKEM": ["1234.56", "789.00"]}
         type_fields = {
             "CELKEM": {
                 "fiels_name": "CELKEM",
@@ -441,7 +442,7 @@ class TestBuildSchema(unittest.TestCase):
                 "fields_null": True,
             },
         }
-        schema = Component._build_schema(records, ["CELKEM"], primary_key=[], type_fields=type_fields)
+        schema = Component._build_schema(samples, ["CELKEM"], primary_key=[], type_fields=type_fields)
         self.assertEqual(schema["CELKEM"].data_types["base"].dtype, SupportedDataTypes.NUMERIC)
 
 
@@ -532,6 +533,54 @@ class TestSaveRecords(unittest.TestCase):
             for f in out_dir.glob("*"):
                 if f.is_file():
                     f.unlink()
+
+
+# ---------------------------------------------------------------------------
+# _build_schema with streaming (column discovery via sample)
+# ---------------------------------------------------------------------------
+
+
+class TestBuildSchemaStreaming(unittest.TestCase):
+    """_build_schema must work when type_fields cover all columns (INFO path).
+
+    Under streaming, the component fetches INFO types up-front (before writing
+    records) and uses those for all schema columns.  Value-based inference is
+    used only for columns that INFO did not describe — in that case the component
+    collects a bounded sample during streaming and infers from that sample.
+    """
+
+    def test_info_types_take_priority_over_value_inference(self):
+        """If INFO covers a column, its type must be used regardless of the value type."""
+        samples = {"CELKEM": ["1234.56", "789.00"]}
+        type_fields = {
+            "CELKEM": {
+                "fiels_name": "CELKEM",
+                "field_type": "decimal",
+                "field_width": 17,
+                "field_decimal": 2,
+                "fields_null": True,
+            }
+        }
+        schema = Component._build_schema(samples, ["CELKEM"], primary_key=[], type_fields=type_fields)
+        from keboola.component.dao import SupportedDataTypes
+
+        self.assertEqual(schema["CELKEM"].data_types["base"].dtype, SupportedDataTypes.NUMERIC)
+
+    def test_value_inference_used_for_columns_not_in_info(self):
+        """Columns absent from INFO must still get their type inferred from values."""
+        samples = {"AMOUNT": [100, 200]}
+        schema = Component._build_schema(samples, ["AMOUNT"], primary_key=[], type_fields={})
+        from keboola.component.dao import SupportedDataTypes
+
+        self.assertEqual(schema["AMOUNT"].data_types["base"].dtype, SupportedDataTypes.INTEGER)
+
+    def test_schema_built_from_empty_sample_defaults_to_string(self):
+        """A column with no non-null values in the sample must default to STRING."""
+        samples = {"X": []}  # no non-null values collected
+        schema = Component._build_schema(samples, ["X"], primary_key=[], type_fields={})
+        from keboola.component.dao import SupportedDataTypes
+
+        self.assertEqual(schema["X"].data_types["base"].dtype, SupportedDataTypes.STRING)
 
 
 # ---------------------------------------------------------------------------
@@ -635,6 +684,71 @@ class TestRunErrors(unittest.TestCase):
         )
         with self.assertRaises(UserException):
             comp.run()
+
+
+# ---------------------------------------------------------------------------
+# run() — streaming integration
+# ---------------------------------------------------------------------------
+
+
+class TestRunStreaming(unittest.TestCase):
+    """run() must use stream_command (not execute_command) for data extraction."""
+
+    def setUp(self):
+        self.comp = _make_component()
+        from configuration import Configuration
+
+        self.comp.params = Configuration(
+            connection=self.comp.params.connection.model_dump(by_alias=True),
+            source={"object": "invoices_issued"},
+            destination={"load_type": "full_load"},
+        )
+        out_dir = Path(_UNIT_HELPER_DATADIR) / "out" / "tables"
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+    def tearDown(self):
+        out_dir = Path(_UNIT_HELPER_DATADIR) / "out" / "tables"
+        if out_dir.exists():
+            for f in out_dir.glob("*"):
+                if f.is_file():
+                    f.unlink()
+
+    def test_run_uses_stream_command_not_execute_command(self):
+        """run() must call client.stream_command to extract data records."""
+        from client import PremierClient
+
+        mock_client = MagicMock(spec=PremierClient)
+        # stream_command returns a generator; simulate an empty result
+        mock_client.stream_command.return_value = iter([])
+        mock_client.execute_command.return_value = []  # for INFO call
+
+        with patch.object(self.comp, "_build_client", return_value=mock_client):
+            self.comp.run()
+
+        mock_client.stream_command.assert_called_once()
+        call_args = mock_client.stream_command.call_args
+        self.assertEqual(call_args[0][0], "FA_OUT")
+
+    def test_run_writes_csv_from_streamed_records(self):
+        """run() must produce a CSV from records yielded by stream_command."""
+        from client import PremierClient
+
+        records = [{"INTER": 1, "AMOUNT": 500}, {"INTER": 2, "AMOUNT": 750}]
+        mock_client = MagicMock(spec=PremierClient)
+        mock_client.stream_command.return_value = iter(records)
+        mock_client.execute_command.return_value = []  # INFO returns nothing
+
+        with patch.object(self.comp, "_build_client", return_value=mock_client):
+            self.comp.run()
+
+        out_path = Path(_UNIT_HELPER_DATADIR) / "out" / "tables" / "invoices_issued.csv"
+        self.assertTrue(out_path.exists())
+        with open(out_path) as f:
+            rows = list(csv.reader(f))
+        # Header + 2 data rows
+        self.assertEqual(len(rows), 3)
+        self.assertIn("INTER", rows[0])
+        self.assertIn("AMOUNT", rows[0])
 
 
 # ---------------------------------------------------------------------------
