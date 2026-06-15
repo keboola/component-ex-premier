@@ -10,7 +10,7 @@ import csv
 import json
 import logging
 import tempfile
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
@@ -192,70 +192,58 @@ class Component(ComponentBase):
     def _save_records(self, record_stream: Iterable[dict[str, Any]], spec: ObjectSpec, client: PremierClient) -> None:
         """Stream records from *record_stream* to the output CSV table.
 
-        The approach is a single pass with a bounded look-aside sample:
+        Single-pass approach with a bounded look-aside sample:
 
         1. The first record fixes the column set (PREMIER responses are tabular
-           so all records share the same schema).
+           so all records share the same schema).  Subsequent records that carry
+           unexpected extra keys are written with those keys silenced (they are
+           ignored; no column list growth mid-stream).
         2. Up to ``_TYPE_SAMPLE_SIZE`` records are buffered in memory to allow
            value-based type inference for columns not described by INFO.
         3. All records are written to a temporary file first (no header), then
-           the column set and type information are known and the final output
-           CSV is written with a header followed by all rows from the temp file.
+           the column set and type information are used to write the final
+           output CSV with a header followed by all rows from the temp file.
 
-        INFO types are fetched up-front (before streaming begins) via
-        :meth:`_fetch_table_types` and take precedence over value inference.
-        This means streaming and authoritative type information are fully
-        compatible.
+        INFO types are fetched AFTER the first data record is confirmed — this
+        preserves the original HTTP call order (data command first, then INFO)
+        which is important for VCR cassette replay.
         """
-        stream_iter: Iterator[dict[str, Any]] = iter(record_stream)
-
-        # Peek at the first record to detect empty result and discover columns.
-        # INFO is fetched AFTER the first data record is confirmed — this
-        # preserves the original HTTP call order (data command first, then INFO)
-        # which is important for VCR cassette replay.
-        try:
-            first_record = next(stream_iter)
-        except StopIteration:
-            logging.info("No records to write for '%s' — skipping output table.", spec.table_name)
-            return
-
-        # Derive columns from the first record.  PREMIER is a SQL Server–backed
-        # RPC API; all records in a single response share the same column set.
-        # We use a sorted union in case later records add unexpected keys.
-        columns: list[str] = sorted(first_record.keys())
-        column_set: set[str] = set(columns)
-
-        primary_key = [pk for pk in spec.primary_key if pk in column_set]
-        if spec.primary_key and not primary_key:
-            raise UserException(
-                f"Expected primary key column(s) {spec.primary_key} are missing from the '{spec.table_name}' "
-                f"response. Cannot write the table safely — the PREMIER API response shape may have changed."
-            )
-
-        # Fetch authoritative column types from INFO now — after the data
-        # command has already been sent.  This preserves the historical
-        # HTTP call order (data first, INFO second) that the VCR cassettes
-        # were recorded with.
-        type_fields = self._fetch_table_types(client, spec.info_table)
-
-        # --- Stream all records to a temp file while collecting samples ----
-        # value_samples[col] = list of non-null values seen so far (capped at _TYPE_SAMPLE_SIZE)
-        value_samples: dict[str, list[Any]] = {col: [] for col in columns}
+        # --- Initialise state for the first-record pass --------------------
+        columns: list[str] = []
+        column_set: set[str] = set()
+        primary_key: list[str] = []
+        type_fields: dict[str, dict[str, Any]] = {}
+        value_samples: dict[str, list[Any]] = {}
         records_written = 0
+        first_record_seen = False
 
         with tempfile.TemporaryFile(mode="w+", encoding="utf-8", newline="") as tmp:
-            # Write rows without a header; columns may grow as new records are seen.
-            # We use a plain csv.writer and serialise each field in column order.
             csv_writer = csv.writer(tmp)
 
-            for record in [first_record, *stream_iter]:
-                # Discover any new columns introduced by this record.
-                new_keys = record.keys() - column_set
-                if new_keys:
-                    columns = sorted(column_set | new_keys)
+            for record in record_stream:
+                if not first_record_seen:
+                    first_record_seen = True
+
+                    # Pin columns to the first record.  PREMIER is a SQL
+                    # Server–backed RPC API; all records in a single response
+                    # share the same schema.
+                    columns = sorted(record.keys())
                     column_set = set(columns)
-                    for k in new_keys:
-                        value_samples[k] = []
+
+                    primary_key = [pk for pk in spec.primary_key if pk in column_set]
+                    if spec.primary_key and not primary_key:
+                        raise UserException(
+                            f"Expected primary key column(s) {spec.primary_key} are missing from the "
+                            f"'{spec.table_name}' response. Cannot write the table safely — the PREMIER "
+                            f"API response shape may have changed."
+                        )
+
+                    # Fetch authoritative column types from INFO now — after
+                    # the data command has already been sent.  This preserves
+                    # the historical HTTP call order (data first, INFO second)
+                    # that the VCR cassettes were recorded with.
+                    type_fields = self._fetch_table_types(client, spec.info_table)
+                    value_samples = {col: [] for col in columns}
 
                 csv_writer.writerow([self._serialize_value(record.get(col)) for col in columns])
                 records_written += 1
@@ -265,6 +253,10 @@ class Component(ComponentBase):
                         v = record.get(col)
                         if v is not None:
                             value_samples[col].append(v)
+
+            if not first_record_seen:
+                logging.info("No records to write for '%s' — skipping output table.", spec.table_name)
+                return
 
             logging.info("Received %d record(s) for '%s'", records_written, spec.table_name)
 
@@ -392,19 +384,6 @@ class Component(ComponentBase):
             if all(isinstance(v, (int, float)) for v in non_bool):
                 return BaseType.numeric()
         return BaseType.string()
-
-    @staticmethod
-    def _collect_columns(records: list[dict[str, Any]]) -> list[str]:
-        """Union of keys across all records.
-
-        Sorted to a stable order: PREMIER (an RPC API) does not guarantee key order
-        between responses, and an unstable column list would read as a schema change
-        to Keboola Storage on every run.
-        """
-        seen: set[str] = set()
-        for record in records:
-            seen.update(record.keys())
-        return sorted(seen)
 
     @staticmethod
     def _serialize_value(value: Any) -> Any:

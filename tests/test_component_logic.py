@@ -257,43 +257,6 @@ class TestBuildQueryParameters(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
-# _collect_columns
-# ---------------------------------------------------------------------------
-
-
-class TestCollectColumns(unittest.TestCase):
-    def test_single_record_returns_its_keys(self):
-        records = [{"A": 1, "B": 2}]
-        self.assertEqual(Component._collect_columns(records), ["A", "B"])
-
-    def test_union_of_keys_across_records(self):
-        records = [{"A": 1, "B": 2}, {"A": 3, "C": 4}]
-        cols = Component._collect_columns(records)
-        self.assertIn("A", cols)
-        self.assertIn("B", cols)
-        self.assertIn("C", cols)
-
-    def test_sorted_order_returned(self):
-        # _collect_columns now returns alphabetically sorted column names, not insertion order.
-        records = [{"Z": 1, "A": 2}, {"M": 3, "A": 4}]
-        cols = Component._collect_columns(records)
-        self.assertEqual(cols, ["A", "M", "Z"])
-
-    def test_no_duplicate_columns(self):
-        records = [{"ID": 1}, {"ID": 2}, {"ID": 3}]
-        cols = Component._collect_columns(records)
-        self.assertEqual(cols, ["ID"])
-
-    def test_empty_records_returns_empty(self):
-        self.assertEqual(Component._collect_columns([]), [])
-
-    def test_extra_keys_in_later_records_are_appended(self):
-        records = [{"A": 1}, {"A": 2, "B": 3, "C": 4}]
-        cols = Component._collect_columns(records)
-        self.assertEqual(cols, ["A", "B", "C"])
-
-
-# ---------------------------------------------------------------------------
 # _serialize_value
 # ---------------------------------------------------------------------------
 
@@ -525,6 +488,72 @@ class TestSaveRecords(unittest.TestCase):
         with open(out_dir / "invoices_issued.csv.manifest") as f:
             manifest = json.load(f)
         self.assertTrue(manifest.get("has_header"))
+
+    def test_generator_not_drained_into_list(self):
+        """_save_records must iterate the stream in a single pass (finding 1).
+
+        The old pattern ``for record in [first_record, *stream_iter]`` unpacks
+        the entire generator into a list before the loop body runs for record 0.
+        This holds ALL records in memory at once, defeating streaming.
+
+        Detection strategy: wrap the record stream in a generator that raises
+        ``RuntimeError`` when item 2 is requested AND an out-of-band flag says
+        that the temp-file write of item 0 has NOT happened yet.
+
+        - Drain path  : list() pulls items 0, 1, 2 before the for-loop starts.
+          Item 2 is requested while the flag is still False → RuntimeError.
+        - Single-pass : items are consumed one at a time inside the for-loop.
+          Item 0's writerow runs and sets the flag to True BEFORE item 2 is
+          requested → no error.
+
+        We set the flag by patching ``component.tempfile.TemporaryFile`` to
+        intercept the write path.  However, patching C-extension csv.writer is
+        simpler via wrapping the TemporaryFile object.
+
+        Simpler alternative: patch ``component.csv`` so that the first call to
+        csv.writer returns a wrapper that sets a flag on first ``writerow``.
+        """
+        import csv as csv_module
+
+        import component as comp_module
+
+        spec = ObjectSpec("FA_OUT", "invoices_issued", ["INTER"])
+        out_dir = Path(_UNIT_HELPER_DATADIR) / "out" / "tables"
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        first_write_done = [False]
+        items_yielded_count = [0]
+
+        class WriterWrapper:
+            """Thin wrapper around csv.writer that sets first_write_done on first writerow."""
+
+            def __init__(self, f):
+                self._w = csv_module.writer(f)
+
+            def writerow(self, row):
+                first_write_done[0] = True
+                self._w.writerow(row)
+
+        def lazy_records():
+            for i in range(3):
+                items_yielded_count[0] += 1
+                if i == 2 and not first_write_done[0]:
+                    raise AssertionError(
+                        "Item 2 was consumed before the first writerow — generator was drained into a list."
+                    )
+                yield {"INTER": f"FA-{i:03d}", "AMOUNT": i * 100}
+
+        with patch.object(comp_module, "csv") as mock_csv_mod:
+            # Delegate everything to the real csv module; only override writer.
+            mock_csv_mod.writer = WriterWrapper
+            mock_csv_mod.reader = csv_module.reader
+            self.comp._save_records(lazy_records(), spec, self.mock_client)
+
+        # Output correctness: header + 3 data rows
+        out_path = Path(_UNIT_HELPER_DATADIR) / "out" / "tables" / "invoices_issued.csv"
+        with open(out_path) as f:
+            rows = list(csv.reader(f))
+        self.assertEqual(len(rows), 4)  # header + 3 data rows
 
     def tearDown(self):
         """Clean written output files so tests don't interfere with each other."""
