@@ -1,0 +1,210 @@
+{
+  "incremental": false,
+  "write_always": false,
+  "delimiter": ",",
+  "enclosure": "\"",
+  "manifest_type": "out",
+  "has_header": true,
+  "schema": [
+    {
+      "name": "CELKEM",
+      "data_type": {
+        "base": {
+          "type": "NUMERIC",
+          "length": "17,2"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "CISLO",
+      "data_type": {
+        "base": {
+          "type": "INTEGER"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "CISLO_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "10"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "DATUM_SPL",
+      "data_type": {
+        "base": {
+          "type": "TIMESTAMP"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "DATUM_USK",
+      "data_type": {
+        "base": {
+          "type": "TIMESTAMP"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "DATUM_VYS",
+      "data_type": {
+        "base": {
+          "type": "TIMESTAMP"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "DOD_LIST",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "24"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "DOKLAD",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "3"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "FORMA",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "20"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "ICO_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "8"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "ID",
+      "data_type": {
+        "base": {
+          "type": "STRING"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "ID_PAR",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "36"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "INTER",
+      "data_type": {
+        "base": {
+          "type": "INTEGER"
+        }
+      },
+      "primary_key": true
+    },
+    {
+      "name": "K_SYMBOL",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "4"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "NAZEV_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "64"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "OBJEDNAVKA",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "32"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "POLOZKY",
+      "data_type": {
+        "base": {
+          "type": "STRING"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "PUV_DOKL",
+      "data_type": {
+        "base": {
+          "type": "INTEGER"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "STKOD",
+      "data_type": {
+        "base": {
+          "type": "INTEGER"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "ZALOHA",
+      "data_type": {
+        "base": {
+          "type": "NUMERIC",
+          "length": "17,2"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "ZKKOD",
+      "data_type": {
+        "base": {
+          "type": "INTEGER"
+        }
+      },
+      "nullable": true
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+[
+  {
+    "name": "01_testConnection",
+    "description": "Validate connection/auth against the PREMIER test server (VERZEAPI).",
+    "config": {
+      "action": "testConnection",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        }
+      }
+    }
+  },
+  {
+    "name": "02_customers",
+    "description": "Full load of customers (PARTNERI, part_typ=OD).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        },
+        "source": {"object": "customers"},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  },
+  {
+    "name": "03_suppliers",
+    "description": "Full load of suppliers (PARTNERI, part_typ=DO).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        },
+        "source": {"object": "suppliers"},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  },
+  {
+    "name": "04_invoices_issued",
+    "description": "Full load of issued invoices (FA_OUT, timestamp floor).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        },
+        "source": {"object": "invoices_issued"},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  },
+  {
+    "name": "05_invoices_received",
+    "description": "Full load of received invoices (FA_IN, timestamp floor).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        },
+        "source": {"object": "invoices_received"},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  },
+  {
+    "name": "06_products",
+    "description": "Full load of products / stock cards (CENIK, warehouse 1).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        },
+        "source": {"object": "products", "warehouse": 1},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  },
+  {
+    "name": "07_invoices_issued_by_date",
+    "description": "Issued invoices narrowed by a date range (exercises dat_od/dat_do).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        },
+        "source": {"object": "invoices_issued", "date_from": "2020-01-01", "date_to": "2020-01-31"},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  },
+  {
+    "name": "08_products_missing_warehouse",
+    "description": "Products without a warehouse number -> UserException (exit 1, no HTTP call).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        },
+        "source": {"object": "products"},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  },
+  {
+    "name": "09_run_missing_id_uj",
+    "description": "Run without id_uj -> UserException (exit 1, no HTTP call).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test"
+        },
+        "source": {"object": "customers"},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  },
+  {
+    "name": "10_orders_received",
+    "description": "Full load of received orders (OB_IN, timestamp+INFO, exercises always_timestamp and authoritative types).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        },
+        "source": {"object": "orders_received"},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  },
+  {
+    "name": "11_stock_receipts",
+    "description": "Full load of stock receipts (PRIJEMKY, warehouse 1, exercises needs_warehouse and authoritative types).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        },
+        "source": {"object": "stock_receipts", "warehouse": 1},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  },
+  {
+    "name": "12_vat_rates",
+    "description": "Full load of VAT rates codebook (SAZBY_DPH, exercises small static list + INFO types including BOOLEAN).",
+    "config": {
+      "action": "run",
+      "parameters": {
+        "connection": {
+          "base_url": "https://dev.premier.cz:12375",
+          "username": "test",
+          "#password": "test",
+          "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+        },
+        "source": {"object": "vat_rates"},
+        "destination": {"load_type": "full_load"}
+      }
+    }
+  }
+]

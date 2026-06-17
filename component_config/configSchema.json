@@ -1,19 +1,62 @@
 {
   "type": "object",
-  "title": "extractor configuration",
-  "required": [
-    "print_hello"
-  ],
+  "title": "PREMIER System Extractor",
   "properties": {
-    "print_hello": {
-      "type": "boolean",
-      "title": "Print Hello",
-      "propertyOrder": 1
+    "connection": {
+      "type": "object",
+      "title": "Connection",
+      "required": true,
+      "propertyOrder": 1,
+      "properties": {
+        "base_url": {
+          "type": "string",
+          "title": "API base URL",
+          "description": "Full URL including scheme and port of the customer's PREMIER API service, e.g. https://dev.premier.cz:12375",
+          "format": "uri",
+          "required": true,
+          "propertyOrder": 1
+        },
+        "username": {
+          "type": "string",
+          "title": "Username",
+          "description": "PREMIER user login",
+          "required": true,
+          "propertyOrder": 2
+        },
+        "#password": {
+          "type": "string",
+          "title": "Password",
+          "description": "Password for the PREMIER user account.",
+          "format": "password",
+          "required": true,
+          "propertyOrder": 3
+        },
+        "id_uj": {
+          "type": "string",
+          "title": "Accounting unit ID (ID-UJ)",
+          "description": "GUID sent as the ID-UJ header to select the accounting unit, issued by the customer's API service admin",
+          "required": true,
+          "propertyOrder": 4
+        },
+        "test_connection": {
+          "type": "button",
+          "format": "test-connection",
+          "propertyOrder": 5,
+          "options": {
+            "async": {
+              "label": "Test Connection",
+              "action": "testConnection"
+            }
+          }
+        }
+      }
     },
     "debug": {
       "type": "boolean",
-      "title": "Debug",
-      "propertyOrder": 2
+      "title": "Debug mode",
+      "description": "Enable verbose logging",
+      "default": false,
+      "propertyOrder": 99
     }
   }
 }

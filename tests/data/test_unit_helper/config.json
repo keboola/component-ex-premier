@@ -1,0 +1,19 @@
+{
+  "parameters": {
+    "connection": {
+      "base_url": "https://premier.example.com",
+      "username": "testuser",
+      "#password": "testpass",
+      "id_uj": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+    },
+    "source": {
+      "object": "invoices_issued",
+      "date_from": "",
+      "date_to": ""
+    },
+    "destination": {
+      "load_type": "incremental_load"
+    },
+    "debug": false
+  }
+}

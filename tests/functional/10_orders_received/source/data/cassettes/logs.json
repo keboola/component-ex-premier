@@ -1,0 +1,24 @@
+{
+  "exit_code": null,
+  "stderr": "",
+  "logs": [
+    {
+      "level": "INFO",
+      "logger": "root",
+      "message": "Loading state file..",
+      "timestamp": "2025-06-01T12:00:00.000Z"
+    },
+    {
+      "level": "INFO",
+      "logger": "root",
+      "message": "Fetching 'orders_received' via PREMIER command 'OB_IN'",
+      "timestamp": "2025-06-01T12:00:00.000Z"
+    },
+    {
+      "level": "INFO",
+      "logger": "root",
+      "message": "Received 331 record(s) for 'orders_received'",
+      "timestamp": "2025-06-01T12:00:00.000Z"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "action": "run",
+  "parameters": {
+    "connection": {
+      "base_url": "https://dev.premier.cz:12375",
+      "username": "test",
+      "#password": "test",
+      "id_uj": "3ce17312-8dbd-49a0-94d3-2e01b65e4173"
+    },
+    "source": {
+      "object": "invoices_received"
+    },
+    "destination": {
+      "load_type": "full_load"
+    }
+  }
+}

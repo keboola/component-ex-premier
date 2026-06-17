@@ -1,0 +1,40 @@
+{
+  "files": {},
+  "hash_algorithm": "sha256",
+  "tables": {
+    "invoices_received.csv": {
+      "columns": [
+        "CELKEM",
+        "CISLO",
+        "CISLO_ODB",
+        "DATUM_SPL",
+        "DATUM_USK",
+        "DATUM_VYS",
+        "DOD_LIST",
+        "DOKLAD",
+        "FORMA",
+        "ICO_ODB",
+        "ID",
+        "ID_PAR",
+        "INTER",
+        "K_SYMBOL",
+        "NAZEV_ODB",
+        "OBJEDNAVKA",
+        "POLOZ_IN",
+        "STKOD",
+        "ZALOHA",
+        "ZKKOD"
+      ],
+      "hash": "sha256:c4d95355ed5ba879f043347838f2cfd1a90cf8982848519c449cf54b33466dd0",
+      "row_count": 988,
+      "size_bytes": 611263
+    },
+    "invoices_received.csv.manifest": {
+      "columns": null,
+      "hash": "sha256:6b7eeb213c946ebf622d9c2a25a07ae383e615e08626fa0149423acb79550013",
+      "row_count": null,
+      "size_bytes": 3381
+    }
+  },
+  "version": "1.0"
+}

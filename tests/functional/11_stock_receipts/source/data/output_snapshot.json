@@ -1,0 +1,47 @@
+{
+  "files": {},
+  "hash_algorithm": "sha256",
+  "tables": {
+    "stock_receipts.csv": {
+      "columns": [
+        "BRUTTO",
+        "CELKEM",
+        "CISLO",
+        "CISLO_ODB",
+        "DATUM_VYS",
+        "DIC_ODB",
+        "DOD_LIST",
+        "DOKLAD",
+        "DOPRAVA",
+        "ICO_ODB",
+        "ID",
+        "ID_KON",
+        "ID_PAR",
+        "INTER",
+        "MESTO_ODB",
+        "NAZEV_ODB",
+        "OBJEDNAVKA",
+        "POPIS",
+        "POZNAMKA",
+        "PSC_ODB",
+        "SKLAD",
+        "SKL_CENA",
+        "SK_KOD",
+        "STAT_ODB",
+        "STKOD",
+        "ULICE_ODB",
+        "pol_skl"
+      ],
+      "hash": "sha256:410f55f83c187aeeee46516b0be80182342ad9036410e282fd34bc3cd4da0670",
+      "row_count": 155,
+      "size_bytes": 151729
+    },
+    "stock_receipts.csv.manifest": {
+      "columns": null,
+      "hash": "sha256:f264137c5b0df1e032683752375f312714b060281f152cc92fd571e085b6fc28",
+      "row_count": null,
+      "size_bytes": 4633
+    }
+  },
+  "version": "1.0"
+}

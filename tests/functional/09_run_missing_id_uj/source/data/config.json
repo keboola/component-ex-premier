@@ -1,0 +1,16 @@
+{
+  "action": "run",
+  "parameters": {
+    "connection": {
+      "base_url": "https://dev.premier.cz:12375",
+      "username": "test",
+      "#password": "test"
+    },
+    "source": {
+      "object": "customers"
+    },
+    "destination": {
+      "load_type": "full_load"
+    }
+  }
+}

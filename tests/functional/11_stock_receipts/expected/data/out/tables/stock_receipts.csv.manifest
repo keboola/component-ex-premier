@@ -1,0 +1,273 @@
+{
+  "incremental": false,
+  "write_always": false,
+  "delimiter": ",",
+  "enclosure": "\"",
+  "manifest_type": "out",
+  "has_header": true,
+  "schema": [
+    {
+      "name": "BRUTTO",
+      "data_type": {
+        "base": {
+          "type": "NUMERIC",
+          "length": "17,2"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "CELKEM",
+      "data_type": {
+        "base": {
+          "type": "NUMERIC",
+          "length": "17,3"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "CISLO",
+      "data_type": {
+        "base": {
+          "type": "INTEGER"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "CISLO_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "10"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "DATUM_VYS",
+      "data_type": {
+        "base": {
+          "type": "TIMESTAMP"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "DIC_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "14"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "DOD_LIST",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "24"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "DOKLAD",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "3"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "DOPRAVA",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "48"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "ICO_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "8"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "ID",
+      "data_type": {
+        "base": {
+          "type": "STRING"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "ID_KON",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "36"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "ID_PAR",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "36"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "INTER",
+      "data_type": {
+        "base": {
+          "type": "INTEGER"
+        }
+      },
+      "primary_key": true
+    },
+    {
+      "name": "MESTO_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "48"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "NAZEV_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "64"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "OBJEDNAVKA",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "24"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "POPIS",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "48"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "POZNAMKA",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "48"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "PSC_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "10"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "SKLAD",
+      "data_type": {
+        "base": {
+          "type": "INTEGER"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "SKL_CENA",
+      "data_type": {
+        "base": {
+          "type": "NUMERIC",
+          "length": "17,2"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "SK_KOD",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "3"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "STAT_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "24"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "STKOD",
+      "data_type": {
+        "base": {
+          "type": "INTEGER"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "ULICE_ODB",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "64"
+        }
+      },
+      "nullable": true
+    },
+    {
+      "name": "pol_skl",
+      "data_type": {
+        "base": {
+          "type": "STRING"
+        }
+      },
+      "nullable": true
+    }
+  ]
+}
